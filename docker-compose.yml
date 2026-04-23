@@ -25,31 +25,31 @@ services:
       test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
       timeout: 5s
       interval: 5s
-      retries: 3
+      retries: 10
 
   ewm-service:
     build: main-service
     image: ewm-service
     ports:
       - "8080:8080"
-#    depends_on:
-#      ewm-db:
-#        condition: service_healthy
+    depends_on:
+      ewm-db:
+        condition: service_healthy
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm
       - SPRING_DATASOURCE_USERNAME=ewm
       - SPRING_DATASOURCE_PASSWORD=ewm
 
-#  ewm-db:
-#    image: postgres:16.1
-#    ports:
-#      - "6542:5432"
-#    environment:
-#      - POSTGRES_PASSWORD=ewm
-#      - POSTGRES_USER=ewm
-#      - POSTGRES_DB=ewm
-#    healthcheck:
-#      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
-#      timeout: 5s
-#      interval: 5s
-#      retries: 3
+  ewm-db:
+    image: postgres:16.1
+    ports:
+      - "6542:5432"
+    environment:
+      - POSTGRES_PASSWORD=ewm
+      - POSTGRES_USER=ewm
+      - POSTGRES_DB=ewm
+    healthcheck:
+      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      timeout: 5s
+      interval: 5s
+      retries: 10
