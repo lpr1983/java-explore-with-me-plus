@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class ViewStat {
+public class StatDto {
     String app;
     String uri;
     int hits;
