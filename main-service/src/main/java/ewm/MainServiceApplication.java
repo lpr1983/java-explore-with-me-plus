@@ -1,33 +1,27 @@
 package ewm;
 
-import ewm.stat.client.StatClient;
-import ewm.stat.client.model.GetStatsParams;
-import ewm.stat.client.model.HitParams;
-import ewm.stat.dto.StatDto;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
-
-import java.time.LocalDateTime;
-import java.util.List;
+import ewm.stat.client.StatClient;import ewm.stat.client.exception.StatClientException;import ewm.stat.client.model.GetStatsParams;import ewm.stat.client.model.HitParams;import ewm.stat.dto.StatDto;import lombok.extern.slf4j.Slf4j;import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;import org.springframework.context.ConfigurableApplicationContext;import java.time.LocalDateTime;import java.util.List;
 
 @SpringBootApplication
+@Slf4j
 public class MainServiceApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(MainServiceApplication.class, args);
 
-        // Демонстрация работы клиента стастистики
-        StatClient statClient = context.getBean(StatClient.class);
-
+        // Демонстрация работы StatClient (будет убрана на 2-м этапе)
+       StatClient statClient = context.getBean(StatClient.class);
         try {
             HitParams params = HitParams.builder()
                     .uri("/event/1")
                     .ip("192.168.1.1")
-                    .timestamp(LocalDateTime.now()).build();
+                    .timestamp(LocalDateTime.now())
+                    .build();
 
             statClient.saveHit(params);
-        } catch (Exception e) {
-            System.out.println("Ошибка работы statClient.saveHit: " + e.getMessage());
+            log.info("saveHit");
+        } catch (StatClientException e) {
+            log.error("Ошибка работы statClient.saveHit: {}", e.getMessage());
         }
 
         try {
@@ -39,12 +33,10 @@ public class MainServiceApplication {
                     .build();
 
             List<StatDto> statResult = statClient.getStats(params);
-            System.out.println(statResult);
-        } catch (Exception e) {
-            System.out.println("Ошибка работы statClient.getStats: " + e.getMessage());
+            log.info("getStats, result: {}", statResult);
+        } catch (StatClientException e) {
+            log.error("Ошибка работы statClient.getStats: {}", e.getMessage());
         }
-        //
-
     }
 
 }
