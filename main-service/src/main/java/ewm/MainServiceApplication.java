@@ -1,10 +1,16 @@
 package ewm;
 
-import ewm.stat.client.StatClient;import ewm.stat.client.exception.StatClientException;import ewm.stat.client.model.GetStatsParams;import ewm.stat.client.model.HitParams;import ewm.stat.dto.StatDto;import lombok.extern.slf4j.Slf4j;import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;import org.springframework.context.ConfigurableApplicationContext;import java.time.LocalDateTime;import java.util.List;
+import ewm.stat.client.StatClient;
+import ewm.stat.client.config.StatClientConfig;
+import ewm.stat.client.exception.StatClientException;import ewm.stat.client.model.GetStatsParams;import ewm.stat.client.model.HitParams;import ewm.stat.dto.StatDto;import lombok.extern.slf4j.Slf4j;import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Import;
+
+import java.time.LocalDateTime;import java.util.List;
 
 @SpringBootApplication
 @Slf4j
+@Import(StatClientConfig.class)
 public class MainServiceApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(MainServiceApplication.class, args);

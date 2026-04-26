@@ -1,4 +1,4 @@
-package ewm.config;
+package ewm.stat.client.config;
 
 import ewm.stat.client.StatClient;
 import ewm.stat.client.StatClientImpl;
@@ -12,7 +12,7 @@ public class StatClientConfig {
     @Bean
     public StatClient statClient(@Value("${spring.application.name}") String app,
                                  @Value("${stat-service.url}") String baseUrl,
-                                 @Value("${stat-client.timeout-ms}") int timeoutMs) {
+                                 @Value("${stat-client.timeout-ms:0}") int timeoutMs) {
 
         return new StatClientImpl(app, baseUrl, timeoutMs);
     }
