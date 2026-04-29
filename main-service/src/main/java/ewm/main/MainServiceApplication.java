@@ -1,11 +1,9 @@
 package ewm.main;
 
-import ewm.stat.client.StatClient;
-import ewm.stat.client.exception.StatClientException;import ewm.stat.client.model.GetStatsParams;import ewm.stat.client.model.HitParams;import ewm.stat.dto.StatDto;import lombok.extern.slf4j.Slf4j;import org.springframework.boot.SpringApplication;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
-
-import java.time.LocalDateTime;import java.util.List;
 
 @SpringBootApplication
 @Slf4j
@@ -15,7 +13,7 @@ public class MainServiceApplication {
         ConfigurableApplicationContext context = SpringApplication.run(MainServiceApplication.class, args);
 
         // Демонстрация работы StatClient (будет убрана на 2-м этапе)
-       StatClient statClient = context.getBean(StatClient.class);
+        /* StatClient statClient = context.getBean(StatClient.class);
         try {
             HitParams params = HitParams.builder()
                     .uri("/event/1")
@@ -41,7 +39,7 @@ public class MainServiceApplication {
             log.info("getStats, result: {}", statResult);
         } catch (StatClientException e) {
             log.error("Ошибка работы statClient.getStats: {}", e.getMessage());
-        }
+        } */
     }
 
 }
