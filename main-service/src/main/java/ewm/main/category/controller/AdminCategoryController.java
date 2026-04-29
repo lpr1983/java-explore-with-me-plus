@@ -5,6 +5,7 @@ import ewm.main.dto.CategoryDto;
 import ewm.main.dto.NewCategoryDto;
 import ewm.main.exception.ConflictException;
 import ewm.main.exception.NotFoundException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class AdminCategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryDto add(@RequestBody NewCategoryDto dto) {
+    public CategoryDto add(@Valid @RequestBody NewCategoryDto dto) {
         return categoryService.add(dto);
     }
 
@@ -30,7 +31,7 @@ public class AdminCategoryController {
     }
 
     @PatchMapping("{catId}")
-    public CategoryDto patchById(@PathVariable("catId") Long categoryId,@RequestBody NewCategoryDto dto) {
+    public CategoryDto patchById(@PathVariable("catId") Long categoryId,@Valid @RequestBody NewCategoryDto dto) {
         return categoryService.patchById(categoryId,dto);
     }
 

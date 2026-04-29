@@ -24,17 +24,20 @@ public class CategoryService {
 
     @Transactional
     public CategoryDto add(NewCategoryDto dto) {
-        checkForNameCollisions(dto);
+        if (checkForNameCollisions(dto)) {
+            throw new ConflictException("category already exists");
+        }
         Category newCategory = categoryRepository.save(CategoryMapper.toEntity(dto));
         return CategoryMapper.toDto(newCategory);
     }
 
     @Transactional
     public CategoryDto patchById(Long categoryId, NewCategoryDto dto) {
-        Category existingCategory = categoryRepository
-                .findById(categoryId)
-                .orElseThrow(() -> new NotFoundException("no category found"));
-        checkForNameCollisions(dto);
+        Category existingCategory = categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundException("no category found"));
+        if (checkForNameAndIdCollisions(dto, categoryId)) {
+            throw new ConflictException("category already exists");
+        }
+
         if (!Objects.isNull(dto.getName())) {
             existingCategory.setName(dto.getName());
         }
@@ -44,41 +47,33 @@ public class CategoryService {
 
     @Transactional
     public void deleteOne(Long categoryId) {
-        Category existingCategory = categoryRepository
-                .findById(categoryId)
-                .orElseThrow(() -> new NotFoundException("no category found"));
+        Category existingCategory = categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundException("no category found"));
 
-        categoryRepository
-                .delete(existingCategory);
+        categoryRepository.delete(existingCategory);
     }
 
     @Transactional
     public List<CategoryDto> getAll(Integer from, Integer size) {
-        List<Category> categoryList = entityManager.createQuery(
-                        "SELECT c FROM Category c ORDER BY c.id", Category.class)
-                .setFirstResult(from)
-                .setMaxResults(size)
-                .getResultList();
+        List<Category> categoryList = entityManager.createQuery("SELECT c FROM Category c ORDER BY c.id", Category.class).setFirstResult(from).setMaxResults(size).getResultList();
 
-        return categoryList.stream()
-                .map(CategoryMapper::toDto)
-                .collect(Collectors.toList());
+        return categoryList.stream().map(CategoryMapper::toDto).collect(Collectors.toList());
     }
 
     @Transactional
     public CategoryDto getById(Long categoryId) {
-        Category existingCategory = categoryRepository
-                .findById(categoryId)
-                .orElseThrow(() -> new NotFoundException("no category found"));
+        Category existingCategory = categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundException("no category found"));
 
         return CategoryMapper.toDto(existingCategory);
     }
 
-    private void checkForNameCollisions(NewCategoryDto dto) {
-        if (categoryRepository.existsByName(dto.getName())) {
-            throw new ConflictException(
-                    "category already exists"
-            );
-        }
+    private Boolean checkForNameCollisions(NewCategoryDto dto) {
+        return categoryRepository.existsByName(dto.getName());
+    }
+
+    private boolean checkForNameAndIdCollisions(NewCategoryDto dto, Long id) {
+        Long count = entityManager.createQuery("SELECT COUNT(c) FROM Category c WHERE NOT c.id = :id AND c.name = :name", Long.class).setParameter("id", id).setParameter("name", dto.getName()).getSingleResult();
+
+
+        return count > 0;
     }
 }
