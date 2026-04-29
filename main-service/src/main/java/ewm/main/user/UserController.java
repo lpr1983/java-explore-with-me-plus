@@ -2,6 +2,7 @@ package ewm.main.user;
 
 import ewm.main.exception.ConflictException;
 import ewm.main.exception.NotFoundException;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -24,7 +25,7 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public User createUser(@RequestBody User user) {
+    public User createUser(@Valid @RequestBody User user) {
         log.info("UserDto = {} in controller", user);
         return userService.createUser(user);
     }

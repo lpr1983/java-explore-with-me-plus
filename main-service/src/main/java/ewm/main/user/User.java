@@ -20,15 +20,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "email", nullable = false, length = 255)
+    @Column(name = "email", nullable = false, length = 254)
     @Email
     @NotBlank
     @NotNull
+    @Size(min = 6, max = 254)
     private String email;
 
-    @Column(name = "name", nullable = false, length = 255)
+    @Column(name = "name", nullable = false, length = 250)
     @NotBlank
-    @Size(min = 2)
+    @Size(min = 2, max = 250)
     @NotNull
     private String name;
 }
