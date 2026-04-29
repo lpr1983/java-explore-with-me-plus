@@ -1,0 +1,84 @@
+package ewm.main.category.service;
+
+import ewm.main.category.Category;
+import ewm.main.category.mapper.CategoryMapper;
+import ewm.main.category.repository.CategoryRepository;
+import ewm.main.dto.CategoryDto;
+import ewm.main.dto.NewCategoryDto;
+import ewm.main.exception.ConflictException;
+import ewm.main.exception.NotFoundException;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class CategoryService {
+    private final CategoryRepository categoryRepository;
+    private final EntityManager entityManager;
+
+    @Transactional
+    public CategoryDto add(NewCategoryDto dto) {
+        checkForNameCollisions(dto);
+        Category newCategory = categoryRepository.save(CategoryMapper.toEntity(dto));
+        return CategoryMapper.toDto(newCategory);
+    }
+
+    @Transactional
+    public CategoryDto patchById(Long categoryId, NewCategoryDto dto) {
+        Category existingCategory = categoryRepository
+                .findById(categoryId)
+                .orElseThrow(() -> new NotFoundException("no category found"));
+        checkForNameCollisions(dto);
+        if (!Objects.isNull(dto.getName())) {
+            existingCategory.setName(dto.getName());
+        }
+
+        return CategoryMapper.toDto(existingCategory);
+    }
+
+    @Transactional
+    public void deleteOne(Long categoryId) {
+        Category existingCategory = categoryRepository
+                .findById(categoryId)
+                .orElseThrow(() -> new NotFoundException("no category found"));
+
+        categoryRepository
+                .delete(existingCategory);
+    }
+
+    @Transactional
+    public List<CategoryDto> getAll(Integer from, Integer size) {
+        List<Category> categoryList = entityManager.createQuery(
+                        "SELECT c FROM Category c ORDER BY c.id", Category.class)
+                .setFirstResult(from)
+                .setMaxResults(size)
+                .getResultList();
+
+        return categoryList.stream()
+                .map(CategoryMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public CategoryDto getById(Long categoryId) {
+        Category existingCategory = categoryRepository
+                .findById(categoryId)
+                .orElseThrow(() -> new NotFoundException("no category found"));
+
+        return CategoryMapper.toDto(existingCategory);
+    }
+
+    private void checkForNameCollisions(NewCategoryDto dto) {
+        if (categoryRepository.existsByName(dto.getName())) {
+            throw new ConflictException(
+                    "category already exists"
+            );
+        }
+    }
+}
