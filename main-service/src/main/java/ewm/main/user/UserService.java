@@ -30,10 +30,21 @@ public class UserService {
     }
 
     public User createUser(User user) {
+        log.info("Attempting to create user: {}", user); // логируем входные данные
+
         if (userRepository.existsByEmail(user.getEmail())) {
+            log.warn("Conflict: email already exists: {}", user.getEmail());
             throw new ConflictException("Такой email уже используется!");
         }
-        return userRepository.save(user);
+
+        try {
+            User savedUser = userRepository.save(user);
+            log.info("User created successfully: {}", savedUser.getId());
+            return savedUser;
+        } catch (Exception e) {
+            log.error("Failed to save user: ", e); // ловим и логируем ошибки JPA
+            throw e;
+        }
     }
 
     public void deleteUser(Long id) {

@@ -3,6 +3,7 @@ package ewm.main.user;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -22,10 +23,12 @@ public class User {
     @Column(name = "email", nullable = false, length = 255)
     @Email
     @NotBlank
+    @NotNull
     private String email;
 
     @Column(name = "name", nullable = false, length = 255)
     @NotBlank
     @Size(min = 2)
+    @NotNull
     private String name;
 }
