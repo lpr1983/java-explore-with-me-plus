@@ -1,6 +1,8 @@
 package ewm.main.user;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Entity
@@ -17,8 +19,11 @@ public class User {
     private Long id;
 
     @Column(name = "email", nullable = false, length = 255)
+    @Email
+    @NotBlank
     private String email;
 
     @Column(name = "name", nullable = false, length = 255)
+    @NotBlank
     private String name;
 }
