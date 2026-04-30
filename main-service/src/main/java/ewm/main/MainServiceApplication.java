@@ -10,6 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 @Slf4j
 @ComponentScan(value = {"ewm.main", "ewm.stat.client"})
 public class MainServiceApplication {
+
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(MainServiceApplication.class, args);
     }
