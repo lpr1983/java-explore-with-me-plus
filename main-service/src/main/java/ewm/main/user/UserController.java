@@ -38,13 +38,13 @@ public class UserController {
      * @param size количество элементов в наборе (по умолчанию 10)
      * @return список пользователей, соответствующий фильтрам
      */
+
     @GetMapping
     public List<User> getUsers(
             @RequestParam(required = false) List<Long> ids, // почему в задании Integer?
             @RequestParam(defaultValue = "0") int from,
             @RequestParam(defaultValue = "10") int size) {
 
-        // Если передан массив ID — ищем только этих пользователей
         if (ids != null && !ids.isEmpty()) {
             return userService.findUsersByIds(ids);
         }
