@@ -71,9 +71,6 @@ public class CategoryService {
     }
 
     private boolean checkForNameAndIdCollisions(NewCategoryDto dto, Long id) {
-        Long count = entityManager.createQuery("SELECT COUNT(c) FROM Category c WHERE NOT c.id = :id AND c.name = :name", Long.class).setParameter("id", id).setParameter("name", dto.getName()).getSingleResult();
-
-
-        return count > 0;
+        return categoryRepository.countByNameExcludingId(id,dto.getName()) > 0;
     }
 }
