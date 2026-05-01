@@ -1,4 +1,4 @@
-package ewm.main.event;
+package ewm.main.event.model;
 
 public enum EventStatus {
     PENDING,

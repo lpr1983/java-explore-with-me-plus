@@ -1,4 +1,4 @@
-package ewm.main.event;
+package ewm.main.event.model;
 
 import ewm.main.category.Category;
 import ewm.main.user.User;
