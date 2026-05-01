@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     boolean existsByName(String name);
+
     @Query("SELECT COUNT(c) FROM Category c WHERE NOT c.id = :id AND c.name = :name")
     long countByNameExcludingId(@Param("id") Long id, @Param("name") String name);
 }
