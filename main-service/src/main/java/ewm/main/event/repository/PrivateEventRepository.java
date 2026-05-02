@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface PrivateEventBaseStorage extends JpaRepository<Event, Integer> {
+public interface PrivateEventRepository extends JpaRepository<Event, Long> {
     String BASE_QUERY = """
             select e from Event e
             join fetch e.initiator i

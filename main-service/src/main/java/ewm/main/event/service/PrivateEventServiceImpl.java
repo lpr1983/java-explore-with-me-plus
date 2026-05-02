@@ -5,7 +5,7 @@ import ewm.main.dto.UpdateEventUserRequestDto;
 import ewm.main.event.mapper.EventMapper;
 import ewm.main.event.model.Event;
 import ewm.main.event.model.EventStatus;
-import ewm.main.event.repository.PrivateEventBaseStorage;
+import ewm.main.event.repository.PrivateEventRepository;
 import ewm.main.exception.ConflictException;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
@@ -28,44 +28,44 @@ import java.util.List;
 @Service
 public class PrivateEventServiceImpl implements PrivateEventService {
     private final UserRepository userRepository;
-    private final PrivateEventBaseStorage privateEventBaseStorage;
+    private final PrivateEventRepository privateEventRepository;
     private final CategoryRepository categoryRepository;
 
     public PrivateEventServiceImpl(UserRepository userRepository,
-                                   PrivateEventBaseStorage privateEventBaseStorage,
+                                   PrivateEventRepository privateEventRepository,
                                    CategoryRepository categoryRepository) {
         this.userRepository = userRepository;
-        this.privateEventBaseStorage = privateEventBaseStorage;
+        this.privateEventRepository = privateEventRepository;
         this.categoryRepository = categoryRepository;
     }
 
     @Override
     public EventFullDto getEventOfUserById(long userId, long eventId) {
-        log.info("Get event for userId: {}, eventId: {}", userId, eventId);
+        log.info("Получение события для userId: {}, eventId: {}", userId, eventId);
 
         Event event = findEventByUserIdAndEventIdOrThrow(userId, eventId);
 
-        log.info("Event has gotten successfully, eventId: {}", eventId);
+        log.info("Событие успешно получено, eventId: {}", eventId);
         return EventMapper.toFullDto(event, 0, 0);
     }
 
     @Override
     public List<EventShortDto> getAllByUserId(long userId, int from, int size) {
-        log.info("Getting events for userId: {}, from: {}, size: {}", userId, from, size);
+        log.info("Получение событий для userId: {}, с: {}, размер: {}", userId, from, size);
 
         Pageable pageable = PageRequest.of(from / size, size);
 
-        List<EventShortDto> events = privateEventBaseStorage.findPrivateEventsByUserId(userId, pageable).stream()
+        List<EventShortDto> events = privateEventRepository.findPrivateEventsByUserId(userId, pageable).stream()
                 .map(e -> EventMapper.toShortDto(e, 0, 0))
                 .toList();
 
-        log.info("Number of events: {}", events.size());
+        log.info("Количество событий: {}", events.size());
         return events;
     }
 
     @Override
     public EventFullDto createEvent(long userId, NewEventDto dto) {
-        log.info("Creating event for userId: {}, event details: {}", userId, dto);
+        log.info("Создание события для userId: {}, детали события: {}", userId, dto);
 
         validateEventDate(dto.getEventDate());
 
@@ -76,15 +76,15 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         Event event = EventMapper.toEntity(dto, category, user);
         event.setCreatedOn(LocalDateTime.now());
         event.setState(EventStatus.PENDING);
-        Event savedEvent = privateEventBaseStorage.save(event);
+        Event savedEvent = privateEventRepository.save(event);
 
-        log.info("Event created successfully with id: {}", savedEvent.getId());
+        log.info("Событие успешно создано с id: {}", savedEvent.getId());
         return EventMapper.toFullDto(savedEvent, 0, 0);
     }
 
     @Override
     public EventFullDto updateEventOfUser(long userId, long eventId, UpdateEventUserRequestDto dto) {
-        log.info("Updating event for userId: {}, eventId: {}, update details: {}", userId, eventId, dto);
+        log.info("Обновление события для userId: {}, eventId: {}, детали обновления: {}", userId, eventId, dto);
 
         Event event = findEventByUserIdAndEventIdOrThrow(userId, eventId);
 
@@ -106,9 +106,9 @@ public class PrivateEventServiceImpl implements PrivateEventService {
             }
         }
 
-        Event updatedEvent = privateEventBaseStorage.save(event);
+        Event updatedEvent = privateEventRepository.save(event);
 
-        log.info("Event updated successfully with id: {}", updatedEvent.getId());
+        log.info("Событие успешно обновлено с id: {}", updatedEvent.getId());
         return EventMapper.toFullDto(updatedEvent, 0, 0);
     }
 
@@ -123,12 +123,12 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     }
 
     private Event findEventByUserIdAndEventIdOrThrow(long userId, long eventId) {
-        return privateEventBaseStorage.findOneByInitiator_IdAndId(userId, eventId)
+        return privateEventRepository.findOneByInitiator_IdAndId(userId, eventId)
                 .orElseThrow(() -> new NotFoundException(
                         String.format("У пользователя с id: %d нет события с id: %d", userId, eventId)));
     }
 
-    private void validateEventDate (LocalDateTime eventDate){
+    private void validateEventDate(LocalDateTime eventDate) {
         if (eventDate != null && eventDate.isBefore(LocalDateTime.now().plusHours(2))) {
             throw new ConflictException("Дата события должна быть не ранее чем через 2 часа от текущего момента");
         }

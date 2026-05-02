@@ -5,12 +5,17 @@ import ewm.main.category.mapper.CategoryMapper;
 import ewm.main.dto.EventFullDto;
 import ewm.main.dto.EventShortDto;
 import ewm.main.dto.NewEventDto;
+import ewm.main.dto.UpdateEventAdminRequestDto;
 import ewm.main.dto.UpdateEventUserRequestDto;
 import ewm.main.event.model.Event;
 import ewm.main.user.User;
 import ewm.main.user.UserMapper;
 
 public class EventMapper {
+
+    private EventMapper() {
+    }
+
     public static Event toEntity(NewEventDto dto, Category category, User initiator) {
         Event event = new Event();
         event.setTitle(dto.getTitle());
@@ -79,5 +84,19 @@ public class EventMapper {
         if (dto.getRequestModeration() != null) event.setRequestModeration(dto.getRequestModeration());
     }
 
+    public static void updateEntity(Event event, UpdateEventAdminRequestDto dto, Category category) {
+        if (dto.getTitle() != null) event.setTitle(dto.getTitle());
+        if (dto.getAnnotation() != null) event.setAnnotation(dto.getAnnotation());
+        if (dto.getDescription() != null) event.setDescription(dto.getDescription());
+        if (category != null) {
+            event.setCategory(category);
+        }
+        if (dto.getPaid() != null) event.setPaid(dto.getPaid());
+        if (dto.getParticipantLimit() != null) event.setParticipantLimit(dto.getParticipantLimit());
+        if (dto.getEventDate() != null) event.setEventDate(dto.getEventDate());
+        if (dto.getLocation() != null)
+            event.setLocation(LocationMapper.toLocation(dto.getLocation()));
+        if (dto.getRequestModeration() != null) event.setRequestModeration(dto.getRequestModeration());
+    }
 
 }
