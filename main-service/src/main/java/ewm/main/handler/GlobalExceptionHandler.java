@@ -1,4 +1,4 @@
-package ewm.main.config;
+package ewm.main.handler;
 
 import ewm.main.dto.ApiErrorDto;
 import ewm.main.exception.ConflictException;
@@ -83,5 +83,17 @@ public class GlobalExceptionHandler {
                 .build();
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiErrorDto> handleInternal(Exception e) {
+        ApiErrorDto errorResponse = ApiErrorDto.builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.name())
+                .reason("Internal unknown server error.")
+                .message(e.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 }
