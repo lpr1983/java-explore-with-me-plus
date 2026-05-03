@@ -2,7 +2,6 @@ package ewm.main.event.service;
 
 import ewm.main.dto.EventFullDto;
 import ewm.main.dto.EventShortDto;
-import ewm.main.event.mapper.EventMapper;
 import ewm.main.event.model.Event;
 import ewm.main.event.model.search.EventSort;
 import ewm.main.event.model.EventState;
@@ -20,6 +19,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -64,23 +64,49 @@ public class PublicEventServiceImpl implements PublicEventService {
 
         EventSort eventSort = EventSort.parse(searchParam.getSort());
 
-        Sort sort = eventSort == EventSort.EVENT_DATE
-                ? Sort.by(Sort.Direction.ASC, "eventDate")
-                : Sort.unsorted();
+        if (eventSort == EventSort.VIEWS) {
+            return getEventsSortedByViews(specification, pageParam);
+        }
 
+        return getEventsSortedByEventDate(specification, pageParam);
+    }
+
+    private List<EventShortDto> getEventsSortedByEventDate(Specification<Event> specification,
+                                                           PageParam pageParam) {
         Pageable pageable = PageRequest.of(
                 pageParam.getFrom() / pageParam.getSize(),
                 pageParam.getSize(),
-                sort
+                Sort.by(Sort.Direction.ASC, "eventDate")
         );
 
         List<Event> events = publicEventRepository.findAll(specification, pageable).getContent();
 
         log.info("Найдено {} событий, соответствующих критериям.", events.size());
 
-        return events.stream()
-                .map(event -> EventMapper.toShortDto(event, null, null))
+        return eventDtoAssembler.toShortDtoList(events);
+    }
+
+    private List<EventShortDto> getEventsSortedByViews(Specification<Event> specification,
+                                                       PageParam pageParam) {
+        List<Event> events = publicEventRepository.findAll(specification);
+        log.info("Найдено {} событий для сортировки по просмотрам.", events.size());
+
+        List<EventShortDto> dtos = eventDtoAssembler.toShortDtoList(events);
+
+        return dtos.stream()
+                .sorted(viewsComparator())
+                .skip(pageParam.getFrom())
+                .limit(pageParam.getSize())
                 .toList();
+    }
+
+    private Comparator<EventShortDto> viewsComparator() {
+        return Comparator
+                .comparing(
+                        EventShortDto::getViews,
+                        Comparator.nullsLast(Comparator.reverseOrder())
+                )
+                .thenComparing(EventShortDto::getId);
     }
 
     @Override
@@ -89,10 +115,6 @@ public class PublicEventServiceImpl implements PublicEventService {
         Event event = publicEventRepository.findOneByIdAndState(id, EventState.PUBLISHED)
                 .orElseThrow(() -> new NotFoundException("Событие с id: " + id + " не найдено или недоступно"));
 
-        EventFullDto dto = EventMapper.toFullDto(event, null, null);
-
-        eventDtoAssembler.fillFullDto(event, dto);
-
-        return dto;
+        return eventDtoAssembler.toFullDto(event);
     }
 }

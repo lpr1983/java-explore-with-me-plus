@@ -32,11 +32,10 @@ public class EventMapper {
         return event;
     }
 
-    public static EventFullDto toFullDto(Event event, Long views, Long confirmedRequests) {
+    public static EventFullDto toFullDto(Event event) {
         EventFullDto dto = new EventFullDto();
         dto.setAnnotation(event.getAnnotation());
         dto.setCategory(CategoryMapper.toDto(event.getCategory()));
-        dto.setConfirmedRequests(confirmedRequests);
         dto.setCreatedOn(event.getCreatedOn());
         dto.setDescription(event.getDescription());
         dto.setEventDate(event.getEventDate());
@@ -49,22 +48,19 @@ public class EventMapper {
         dto.setRequestModeration(event.isRequestModeration());
         dto.setState(event.getState().name()); // обязательное поле
         dto.setTitle(event.getTitle());
-        dto.setViews(views);
 
         return dto;
     }
 
-    public static EventShortDto toShortDto(Event event, Long views, Long confirmedRequests) {
+    public static EventShortDto toShortDto(Event event) {
         EventShortDto dto = new EventShortDto();
         dto.setId(event.getId());
         dto.setTitle(event.getTitle());
         dto.setAnnotation(event.getAnnotation());
         dto.setCategory(CategoryMapper.toDto(event.getCategory()));
-        dto.setConfirmedRequests(confirmedRequests);
         dto.setEventDate(event.getEventDate());
         dto.setInitiator(UserMapper.toUserShortDto(event.getInitiator())); // обязательное поле
         dto.setPaid(event.isPaid());
-        dto.setViews(views);
 
         return dto;
     }

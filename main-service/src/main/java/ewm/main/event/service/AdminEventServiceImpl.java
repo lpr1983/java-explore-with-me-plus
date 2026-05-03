@@ -30,10 +30,15 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     private final AdminEventRepository adminEventRepository;
     private final CategoryRepository categoryRepository;
+    private final EventDtoAssembler eventDtoAssembler;
 
-    public AdminEventServiceImpl(AdminEventRepository adminEventRepository, CategoryRepository categoryRepository) {
+    public AdminEventServiceImpl(AdminEventRepository adminEventRepository,
+                                 CategoryRepository categoryRepository,
+                                 EventDtoAssembler eventDtoAssembler
+                                 ) {
         this.adminEventRepository = adminEventRepository;
         this.categoryRepository = categoryRepository;
+        this.eventDtoAssembler = eventDtoAssembler;
     }
 
     @Override
@@ -52,8 +57,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
         log.info("Найдено {} событий, соответствующих критериям.", events.size());
 
-        return events.stream().map(e ->
-                EventMapper.toFullDto(e, null, null)).toList();
+        return eventDtoAssembler.toFullDtoList(events);
     }
 
     @Override
@@ -106,6 +110,7 @@ public class AdminEventServiceImpl implements AdminEventService {
         Event updatedEvent = adminEventRepository.save(event);
 
         log.info("Событие с ID {} обновлено.", eventId);
-        return EventMapper.toFullDto(updatedEvent, null, null);
+
+        return eventDtoAssembler.toFullDto(updatedEvent);
     }
 }

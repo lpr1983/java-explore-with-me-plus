@@ -2,6 +2,7 @@ package ewm.main.event.service;
 
 import ewm.main.dto.EventFullDto;
 import ewm.main.dto.EventShortDto;
+import ewm.main.event.mapper.EventMapper;
 import ewm.main.event.model.Event;
 import ewm.main.stat.StatService;
 import ewm.stat.client.model.GetStatsParams;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,84 +27,74 @@ public class EventDtoAssembler {
         this.statService = statService;
     }
 
-    public void fillShortDto(Event event, EventShortDto dto) {
-        if (event.getPublishedOn() == null) {
-            dto.setViews(null);
-            return;
+    public EventShortDto toShortDto(Event event) {
+        EventShortDto dto = EventMapper.toShortDto(event);
+
+        dto.setViews(getViews(event));
+
+        return dto;
+    }
+
+    public EventFullDto toFullDto(Event event) {
+        EventFullDto dto = EventMapper.toFullDto(event);
+
+        dto.setViews(getViews(event));
+
+        return dto;
+    }
+
+    public List<EventShortDto> toShortDtoList(List<Event> events) {
+        Map<Long, Long> viewsByEventId = getViewsByEventsId(events);
+
+        List<EventShortDto> result = new ArrayList<>();
+
+        for (Event event : events) {
+            EventShortDto dto = EventMapper.toShortDto(event);
+            dto.setViews(getViewsForEvent(event, viewsByEventId));
+            result.add(dto);
         }
+
+        return result;
+    }
+
+    public List<EventFullDto> toFullDtoList(List<Event> events) {
+        Map<Long, Long> viewsByEventId = getViewsByEventsId(events);
+
+        List<EventFullDto> result = new ArrayList<>();
+
+        for (Event event : events) {
+            EventFullDto dto = EventMapper.toFullDto(event);
+            dto.setViews(getViewsForEvent(event, viewsByEventId));
+            result.add(dto);
+        }
+
+        return result;
+    }
+
+    private Long getViews(Event event) {
+        if (event.getPublishedOn() == null) {
+            return null;
+        }
+
+        String uri = getEventUri(event);
 
         GetStatsParams params = GetStatsParams.builder()
                 .start(event.getPublishedOn())
                 .end(LocalDateTime.now())
-                .uris(List.of(getEventUri(event)))
+                .uris(List.of(uri))
                 .unique(UNIQUE_VIEWS)
                 .build();
 
         Map<String, Long> viewsByUri = statService.getViews(params);
 
         if (viewsByUri == null) {
-            dto.setViews(null);
-            return;
+            return null;
         }
 
-        dto.setViews(viewsByUri.getOrDefault(getEventUri(event), 0L));
+        return viewsByUri.getOrDefault(uri, 0L);
     }
 
-    public void fillFullDto(Event event, EventFullDto dto) {
-        if (event.getPublishedOn() == null) {
-            dto.setViews(null);
-            return;
-        }
-
-        GetStatsParams params = GetStatsParams.builder()
-                .start(event.getPublishedOn())
-                .end(LocalDateTime.now())
-                .uris(List.of(getEventUri(event)))
-                .unique(UNIQUE_VIEWS)
-                .build();
-
-        Map<String, Long> viewsByUri = statService.getViews(params);
-
-        if (viewsByUri == null) {
-            dto.setViews(null);
-            return;
-        }
-
-        dto.setViews(viewsByUri.getOrDefault(getEventUri(event), 0L));
-    }
-
-    public void fillShortDtoList(List<Event> events, List<EventShortDto> dtos) {
-        Map<Long, Long> viewsByEventId = getViewsByEventId(events);
-
-        // Не удалось запросить статистику (ошибка вызова сервиса)
-        if (viewsByEventId == null) {
-            for (EventShortDto dto : dtos) {
-                dto.setViews(null);
-            }
-            return;
-        }
-
-        for (EventShortDto dto : dtos) {
-            dto.setViews(viewsByEventId.get(dto.getId()));
-        }
-    }
-
-    public void fillFullDtoList(List<Event> events, List<EventFullDto> dtos) {
-        Map<Long, Long> viewsByEventId = getViewsByEventId(events);
-
-        if (viewsByEventId == null) {
-            for (EventFullDto dto : dtos) {
-                dto.setViews(null);
-            }
-            return;
-        }
-
-        for (EventFullDto dto : dtos) {
-            dto.setViews(viewsByEventId.get(dto.getId()));
-        }
-    }
-
-    private Map<Long, Long> getViewsByEventId(List<Event> events) {
+    private Map<Long, Long> getViewsByEventsId(List<Event> events) {
         List<Event> eventsWithPublishedOn = getEventsWithPublishedOn(events);
 
         if (eventsWithPublishedOn.isEmpty()) {
@@ -135,6 +126,14 @@ public class EventDtoAssembler {
         return viewsByEventId;
     }
 
+    private Long getViewsForEvent(Event event, Map<Long, Long> viewsByEventId) {
+        if (viewsByEventId == null) {
+            return null;
+        }
+
+        return viewsByEventId.get(event.getId());
+    }
+
     private List<Event> getEventsWithPublishedOn(List<Event> events) {
         List<Event> result = new ArrayList<>();
 
@@ -148,7 +147,7 @@ public class EventDtoAssembler {
     }
 
     private List<String> getEventUris(List<Event> events) {
-        Set<String> uniqueUris = new HashSet<>();
+        Set<String> uniqueUris = new LinkedHashSet<>();
 
         for (Event event : events) {
             uniqueUris.add(getEventUri(event));

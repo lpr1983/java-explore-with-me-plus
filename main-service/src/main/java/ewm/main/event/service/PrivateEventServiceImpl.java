@@ -30,13 +30,16 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     private final UserRepository userRepository;
     private final PrivateEventRepository privateEventRepository;
     private final CategoryRepository categoryRepository;
+    private final EventDtoAssembler eventDtoAssembler;
 
     public PrivateEventServiceImpl(UserRepository userRepository,
                                    PrivateEventRepository privateEventRepository,
-                                   CategoryRepository categoryRepository) {
+                                   CategoryRepository categoryRepository,
+                                   EventDtoAssembler eventDtoAssembler) {
         this.userRepository = userRepository;
         this.privateEventRepository = privateEventRepository;
         this.categoryRepository = categoryRepository;
+        this.eventDtoAssembler = eventDtoAssembler;
     }
 
     @Override
@@ -46,7 +49,8 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         Event event = findEventByUserIdAndEventIdOrThrow(userId, eventId);
 
         log.info("Событие успешно получено, eventId: {}", eventId);
-        return EventMapper.toFullDto(event, null, null);
+
+        return eventDtoAssembler.toFullDto(event);
     }
 
     @Override
@@ -55,12 +59,11 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
         Pageable pageable = PageRequest.of(from / size, size);
 
-        List<EventShortDto> events = privateEventRepository.findPrivateEventsByUserId(userId, pageable).stream()
-                .map(e -> EventMapper.toShortDto(e, null, null))
-                .toList();
+        List<Event> events = privateEventRepository.findPrivateEventsByUserId(userId, pageable);
 
         log.info("Количество событий: {}", events.size());
-        return events;
+
+        return eventDtoAssembler.toShortDtoList(events);
     }
 
     @Override
@@ -77,9 +80,9 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         event.setCreatedOn(LocalDateTime.now());
         event.setState(EventState.PENDING);
         Event savedEvent = privateEventRepository.save(event);
-
         log.info("Событие успешно создано с id: {}", savedEvent.getId());
-        return EventMapper.toFullDto(savedEvent, null, null);
+
+        return eventDtoAssembler.toFullDto(savedEvent);
     }
 
     @Override
@@ -107,9 +110,9 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         }
 
         Event updatedEvent = privateEventRepository.save(event);
-
         log.info("Событие успешно обновлено с id: {}", updatedEvent.getId());
-        return EventMapper.toFullDto(updatedEvent, null, null);
+
+        return eventDtoAssembler.toFullDto(updatedEvent);
     }
 
     private User findUserByIdOrThrow(long userId) {
