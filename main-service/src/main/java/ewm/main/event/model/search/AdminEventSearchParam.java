@@ -1,6 +1,6 @@
 package ewm.main.event.model.search;
 
-import ewm.main.event.model.EventStatus;
+import ewm.main.event.model.EventState;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +20,7 @@ import java.util.List;
 @ToString
 public class AdminEventSearchParam {
     private List<Long> users;
-    private List<EventStatus> states;
+    private List<EventState> states;
     private List<Long> categories;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

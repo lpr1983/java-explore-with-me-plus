@@ -32,7 +32,7 @@ public class EventMapper {
         return event;
     }
 
-    public static EventFullDto toFullDto(Event event, long views, long confirmedRequests) {
+    public static EventFullDto toFullDto(Event event, Long views, Long confirmedRequests) {
         EventFullDto dto = new EventFullDto();
         dto.setAnnotation(event.getAnnotation());
         dto.setCategory(CategoryMapper.toDto(event.getCategory()));
@@ -54,7 +54,7 @@ public class EventMapper {
         return dto;
     }
 
-    public static EventShortDto toShortDto(Event event, long views, long confirmedRequests) {
+    public static EventShortDto toShortDto(Event event, Long views, Long confirmedRequests) {
         EventShortDto dto = new EventShortDto();
         dto.setId(event.getId());
         dto.setTitle(event.getTitle());

@@ -2,14 +2,14 @@ package ewm.main.event.model;
 
 import ewm.main.exception.ValidationException;
 
-public enum EventStatus {
+public enum EventState {
     PENDING,
     PUBLISHED,
     CANCELED;
 
-    public static EventStatus parse(String state) {
+    public static EventState parse(String state) {
         try {
-            return EventStatus.valueOf(state.toUpperCase());
+            return EventState.valueOf(state.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new ValidationException("Invalid EventStatus: " + state);
         }

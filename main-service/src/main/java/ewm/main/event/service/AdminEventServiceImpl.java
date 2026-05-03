@@ -8,7 +8,7 @@ import ewm.main.event.mapper.EventMapper;
 import ewm.main.event.model.search.AdminEventSearchParam;
 import ewm.main.event.model.Event;
 import ewm.main.event.model.EventStateAction;
-import ewm.main.event.model.EventStatus;
+import ewm.main.event.model.EventState;
 import ewm.main.event.model.search.PageParam;
 import ewm.main.event.repository.AdminEventRepository;
 import ewm.main.event.repository.EventSpecifications;
@@ -53,7 +53,7 @@ public class AdminEventServiceImpl implements AdminEventService {
         log.info("Найдено {} событий, соответствующих критериям.", events.size());
 
         return events.stream().map(e ->
-                EventMapper.toFullDto(e, 0, 0)).toList();
+                EventMapper.toFullDto(e, null, null)).toList();
     }
 
     @Override
@@ -80,20 +80,20 @@ public class AdminEventServiceImpl implements AdminEventService {
             EventStateAction eventStateAction = EventStateAction.valueOf(stateActionParam);
 
             if (eventStateAction == EventStateAction.PUBLISH_EVENT) {
-                if (event.getState() != EventStatus.PENDING) {
+                if (event.getState() != EventState.PENDING) {
                     throw new ConflictException("Событие может быть опубликовано только в состоянии ожидания публикации.");
                 }
-                event.setState(EventStatus.PUBLISHED);
+                event.setState(EventState.PUBLISHED);
                 event.setPublishedOn(now);
             } else if (eventStateAction == EventStateAction.REJECT_EVENT) {
-                if (event.getState().equals(EventStatus.PUBLISHED)) {
+                if (event.getState().equals(EventState.PUBLISHED)) {
                     throw new ConflictException("Событие уже опубликовано и не может быть отклонено.");
                 }
-                event.setState(EventStatus.CANCELED);
+                event.setState(EventState.CANCELED);
             }
         }
 
-        if (event.getState() == EventStatus.PUBLISHED) {
+        if (event.getState() == EventState.PUBLISHED) {
             LocalDateTime eventDate = event.getEventDate();
             LocalDateTime publishedOn = event.getPublishedOn();
 
@@ -106,6 +106,6 @@ public class AdminEventServiceImpl implements AdminEventService {
         Event updatedEvent = adminEventRepository.save(event);
 
         log.info("Событие с ID {} обновлено.", eventId);
-        return EventMapper.toFullDto(updatedEvent, 0, 0);
+        return EventMapper.toFullDto(updatedEvent, null, null);
     }
 }

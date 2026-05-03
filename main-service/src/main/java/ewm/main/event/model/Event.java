@@ -67,7 +67,7 @@ public class Event {
     @Column(name = "state", nullable = false)
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private EventStatus state = EventStatus.PENDING;
+    private EventState state = EventState.PENDING;
 
     @Column(name = "published_on")
     private LocalDateTime publishedOn;

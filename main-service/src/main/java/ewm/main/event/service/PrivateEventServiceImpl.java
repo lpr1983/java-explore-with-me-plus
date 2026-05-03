@@ -4,7 +4,7 @@ import ewm.main.dto.EventShortDto;
 import ewm.main.dto.UpdateEventUserRequestDto;
 import ewm.main.event.mapper.EventMapper;
 import ewm.main.event.model.Event;
-import ewm.main.event.model.EventStatus;
+import ewm.main.event.model.EventState;
 import ewm.main.event.repository.PrivateEventRepository;
 import ewm.main.exception.ConflictException;
 import jakarta.validation.ValidationException;
@@ -46,7 +46,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         Event event = findEventByUserIdAndEventIdOrThrow(userId, eventId);
 
         log.info("Событие успешно получено, eventId: {}", eventId);
-        return EventMapper.toFullDto(event, 0, 0);
+        return EventMapper.toFullDto(event, null, null);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         Pageable pageable = PageRequest.of(from / size, size);
 
         List<EventShortDto> events = privateEventRepository.findPrivateEventsByUserId(userId, pageable).stream()
-                .map(e -> EventMapper.toShortDto(e, 0, 0))
+                .map(e -> EventMapper.toShortDto(e, null, null))
                 .toList();
 
         log.info("Количество событий: {}", events.size());
@@ -75,11 +75,11 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
         Event event = EventMapper.toEntity(dto, category, user);
         event.setCreatedOn(LocalDateTime.now());
-        event.setState(EventStatus.PENDING);
+        event.setState(EventState.PENDING);
         Event savedEvent = privateEventRepository.save(event);
 
         log.info("Событие успешно создано с id: {}", savedEvent.getId());
-        return EventMapper.toFullDto(savedEvent, 0, 0);
+        return EventMapper.toFullDto(savedEvent, null, null);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
         Event event = findEventByUserIdAndEventIdOrThrow(userId, eventId);
 
-        if (event.getState() != EventStatus.PENDING && event.getState() != EventStatus.CANCELED) {
+        if (event.getState() != EventState.PENDING && event.getState() != EventState.CANCELED) {
             throw new ConflictException("Можно изменять события только в статусах PENDING и CANCELED");
         }
 
@@ -100,8 +100,8 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
         if (dto.getStateAction() != null) {
             switch (dto.getStateAction()) {
-                case "SEND_TO_REVIEW" -> event.setState(EventStatus.PENDING);
-                case "CANCEL_REVIEW" -> event.setState(EventStatus.CANCELED);
+                case "SEND_TO_REVIEW" -> event.setState(EventState.PENDING);
+                case "CANCEL_REVIEW" -> event.setState(EventState.CANCELED);
                 default -> throw new ValidationException("Недопустимое действие: " + dto.getStateAction());
             }
         }
@@ -109,7 +109,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         Event updatedEvent = privateEventRepository.save(event);
 
         log.info("Событие успешно обновлено с id: {}", updatedEvent.getId());
-        return EventMapper.toFullDto(updatedEvent, 0, 0);
+        return EventMapper.toFullDto(updatedEvent, null, null);
     }
 
     private User findUserByIdOrThrow(long userId) {

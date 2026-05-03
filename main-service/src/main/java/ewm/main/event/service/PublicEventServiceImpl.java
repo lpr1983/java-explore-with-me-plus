@@ -5,7 +5,7 @@ import ewm.main.dto.EventShortDto;
 import ewm.main.event.mapper.EventMapper;
 import ewm.main.event.model.Event;
 import ewm.main.event.model.search.EventSort;
-import ewm.main.event.model.EventStatus;
+import ewm.main.event.model.EventState;
 import ewm.main.event.model.search.PageParam;
 import ewm.main.event.model.search.PublicEventSearchParam;
 import ewm.main.event.repository.EventSpecifications;
@@ -27,9 +27,12 @@ import java.util.List;
 public class PublicEventServiceImpl implements PublicEventService {
 
     private final PublicEventRepository publicEventRepository;
+    private final EventDtoAssembler eventDtoAssembler;
 
-    public PublicEventServiceImpl(PublicEventRepository publicEventRepository) {
+    public PublicEventServiceImpl(PublicEventRepository publicEventRepository,
+                                  EventDtoAssembler eventDtoAssembler) {
         this.publicEventRepository = publicEventRepository;
+        this.eventDtoAssembler = eventDtoAssembler;
     }
 
     @Override
@@ -44,7 +47,7 @@ public class PublicEventServiceImpl implements PublicEventService {
         }
 
         Specification<Event> specification = Specification
-                .where(EventSpecifications.stateEqual(EventStatus.PUBLISHED))
+                .where(EventSpecifications.stateEqual(EventState.PUBLISHED))
                 .and(EventSpecifications.searchByTextInAnnotationAndDescription(searchParam.getText()));
 
         if (rangeStart == null && rangeEnd == null) {
@@ -76,16 +79,20 @@ public class PublicEventServiceImpl implements PublicEventService {
         log.info("Найдено {} событий, соответствующих критериям.", events.size());
 
         return events.stream()
-                .map(event -> EventMapper.toShortDto(event, 0, 0))
+                .map(event -> EventMapper.toShortDto(event, null, null))
                 .toList();
     }
 
     @Override
     public EventFullDto getEventById(Long id) {
 
-        Event event = publicEventRepository.findOneByIdAndState(id, EventStatus.PUBLISHED)
+        Event event = publicEventRepository.findOneByIdAndState(id, EventState.PUBLISHED)
                 .orElseThrow(() -> new NotFoundException("Событие с id: " + id + " не найдено или недоступно"));
 
-        return EventMapper.toFullDto(event, 0, 0);
+        EventFullDto dto = EventMapper.toFullDto(event, null, null);
+
+        eventDtoAssembler.fillFullDto(event, dto);
+
+        return dto;
     }
 }

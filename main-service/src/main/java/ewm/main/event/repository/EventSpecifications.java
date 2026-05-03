@@ -1,7 +1,7 @@
 package ewm.main.event.repository;
 
 import ewm.main.event.model.Event;
-import ewm.main.event.model.EventStatus;
+import ewm.main.event.model.EventState;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDateTime;
@@ -34,7 +34,7 @@ public final class EventSpecifications {
                 );
     }
 
-    public static Specification<Event> stateEqual(EventStatus state) {
+    public static Specification<Event> stateEqual(EventState state) {
         if (state == null) {
             return null;
         }
@@ -42,7 +42,7 @@ public final class EventSpecifications {
         return (root, query, cb) -> cb.equal(root.get("state"), state);
     }
 
-    public static Specification<Event> stateIn(List<EventStatus> states) {
+    public static Specification<Event> stateIn(List<EventState> states) {
         if (states == null) {
             return null;
         }

@@ -1,7 +1,7 @@
 package ewm.main.event.repository;
 
 import ewm.main.event.model.Event;
-import ewm.main.event.model.EventStatus;
+import ewm.main.event.model.EventState;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,5 +17,5 @@ public interface PublicEventRepository extends JpaRepository<Event, Long>,
     @EntityGraph(attributePaths = {"initiator", "category"})
     Page<Event> findAll(Specification<Event> specification, Pageable pageable);
 
-    Optional<Event> findOneByIdAndState(Long id, EventStatus state);
+    Optional<Event> findOneByIdAndState(Long id, EventState state);
 }
