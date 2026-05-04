@@ -1,4 +1,4 @@
-package ewm.main.event;
+package ewm.main.event.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
