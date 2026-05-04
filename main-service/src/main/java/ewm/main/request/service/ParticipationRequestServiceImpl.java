@@ -2,7 +2,7 @@ package ewm.main.request.service;
 
 import ewm.main.dto.ParticipationRequestDto;
 import ewm.main.event.model.Event;
-import ewm.main.event.model.EventStatus;
+import ewm.main.event.model.EventState;
 import ewm.main.event.repository.PrivateEventBaseStorage;
 import ewm.main.exception.ConflictException;
 import ewm.main.exception.NotFoundException;
@@ -53,7 +53,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
         }
 
         // событие должно быть опубликовано
-        if (!EventStatus.PUBLISHED.equals(event.getState())) {
+        if (!EventState.PUBLISHED.equals(event.getState())) {
             throw new ConflictException("Нельзя участвовать в неопубликованном событии");
         }
 
@@ -72,7 +72,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
         }
 
         // если модерация отключена — сразу подтверждаем
-        RequestStatus status = event.isRequestModeration() ? RequestStatus.PENDING : RequestStatus.CONFIRMED;
+        RequestStatus status = (event.isRequestModeration() || limit == 0) ? RequestStatus.PENDING : RequestStatus.CONFIRMED;
 
         ParticipationRequest request = ParticipationRequest.builder()
                 .event(event)

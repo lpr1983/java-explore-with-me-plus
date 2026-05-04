@@ -15,13 +15,12 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @ToString
 public class AdminEventSearchParam {
     private List<Long> users;
     private List<EventState> states;
     private List<Long> categories;
+
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime rangeStart;

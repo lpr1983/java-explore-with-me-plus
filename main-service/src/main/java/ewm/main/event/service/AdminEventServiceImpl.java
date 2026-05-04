@@ -47,11 +47,15 @@ public class AdminEventServiceImpl implements AdminEventService {
 
         Pageable pageable = PageRequest.of(pageParam.getFrom() / pageParam.getSize(), pageParam.getSize());
 
-        Specification<Event> spec = EventSpecifications.eventDateAfter(searchParam.getRangeStart())
-                .and(EventSpecifications.eventDateBefore(searchParam.getRangeEnd()))
-                .and(EventSpecifications.initiatorIdIn(searchParam.getUsers()))
-                .and(EventSpecifications.categoryIdIn(searchParam.getCategories()))
-                .and(EventSpecifications.stateIn(searchParam.getStates()));
+        Specification<Event> spec = EventSpecifications.withoutConditions();
+
+        if (searchParam!= null) {
+            spec = spec.and(EventSpecifications.eventDateAfter(searchParam.getRangeStart()))
+                    .and(EventSpecifications.eventDateBefore(searchParam.getRangeEnd()))
+                    .and(EventSpecifications.initiatorIdIn(searchParam.getUsers()))
+                    .and(EventSpecifications.categoryIdIn(searchParam.getCategories()))
+                    .and(EventSpecifications.stateIn(searchParam.getStates()));
+        }
 
         List<Event> events = adminEventRepository.findAll(spec, pageable).getContent();
 

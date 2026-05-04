@@ -1,8 +1,11 @@
 package ewm.main.event.controller;
 
 import ewm.main.dto.EventFullDto;
+import ewm.main.dto.EventRequestStatusUpdateRequestDto;
+import ewm.main.dto.EventRequestStatusUpdateResultDto;
 import ewm.main.dto.EventShortDto;
 import ewm.main.dto.NewEventDto;
+import ewm.main.dto.ParticipationRequestDto;
 import ewm.main.dto.UpdateEventUserRequestDto;
 import ewm.main.event.service.PrivateEventService;
 import jakarta.validation.Valid;
@@ -53,6 +56,18 @@ public class PrivateEventController {
                              @PathVariable long eventId,
                              @Valid @RequestBody UpdateEventUserRequestDto dto) {
         return privateEventService.updateEventOfUser(userId, eventId, dto);
+    }
+
+    @GetMapping("/{userId}/events/{eventId}/requests")
+    List<ParticipationRequestDto> getRequestsForEvent(@PathVariable long userId, @PathVariable long eventId) {
+        return privateEventService.getRequestsForEvent(userId, eventId);
+    }
+
+    @PatchMapping("/{userId}/events/{eventId}/requests")
+    EventRequestStatusUpdateResultDto setRequestsStatus(@PathVariable long userId,
+                                                        @PathVariable long eventId,
+                                                        @Valid @RequestBody EventRequestStatusUpdateRequestDto dto) {
+        return privateEventService.setRequestsStatus(userId, eventId, dto);
     }
 
 }

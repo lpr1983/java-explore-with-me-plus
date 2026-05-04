@@ -5,6 +5,7 @@ import ewm.main.exception.ConflictException;
 import ewm.main.exception.DataIntegrityViolationException;
 import ewm.main.exception.ForbiddenException;
 import ewm.main.exception.NotFoundException;
+import ewm.main.exception.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -83,6 +84,18 @@ public class GlobalExceptionHandler {
                 .build();
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ApiErrorDto> handleValidationException(Exception e) {
+        ApiErrorDto errorResponse = ApiErrorDto.builder()
+                .status(HttpStatus.BAD_REQUEST.name())
+                .reason("Bad request")
+                .message(e.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 
     @ExceptionHandler(Exception.class)
