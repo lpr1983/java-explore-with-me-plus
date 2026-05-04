@@ -5,7 +5,7 @@ import ewm.main.category.mapper.CategoryMapper;
 import ewm.main.category.repository.CategoryRepository;
 import ewm.main.dto.CategoryDto;
 import ewm.main.dto.NewCategoryDto;
-import ewm.main.exception.ConflictException;
+import ewm.main.exception.DataIntegrityViolationException;
 import ewm.main.exception.NotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -25,7 +25,7 @@ public class CategoryService {
     @Transactional
     public CategoryDto add(NewCategoryDto dto) {
         if (checkForNameCollisions(dto)) {
-            throw new ConflictException("category already exists");
+            throw new DataIntegrityViolationException("category already exists");
         }
         Category newCategory = categoryRepository.save(CategoryMapper.toEntity(dto));
         return CategoryMapper.toDto(newCategory);
@@ -35,7 +35,7 @@ public class CategoryService {
     public CategoryDto patchById(Long categoryId, NewCategoryDto dto) {
         Category existingCategory = categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundException("no category found"));
         if (checkForNameAndIdCollisions(dto, categoryId)) {
-            throw new ConflictException("category already exists");
+            throw new DataIntegrityViolationException("category already exists");
         }
 
         if (!Objects.isNull(dto.getName())) {
