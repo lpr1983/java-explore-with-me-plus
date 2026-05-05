@@ -1,8 +1,6 @@
 package ewm.main.event.model.search;
 
 import ewm.main.event.model.EventState;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -10,7 +10,7 @@ import ewm.main.event.model.Event;
 import ewm.main.event.model.EventStateAction;
 import ewm.main.event.model.EventState;
 import ewm.main.event.model.search.PageParam;
-import ewm.main.event.repository.AdminEventRepository;
+import ewm.main.event.repository.EventRepository;
 import ewm.main.event.repository.EventSpecifications;
 import ewm.main.exception.ConflictException;
 import ewm.main.exception.NotFoundException;
@@ -27,16 +27,15 @@ import java.util.List;
 @Slf4j
 @Service
 public class AdminEventServiceImpl implements AdminEventService {
-
-    private final AdminEventRepository adminEventRepository;
+    private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
     private final EventDtoAssembler eventDtoAssembler;
 
-    public AdminEventServiceImpl(AdminEventRepository adminEventRepository,
+    public AdminEventServiceImpl(EventRepository eventRepository,
                                  CategoryRepository categoryRepository,
                                  EventDtoAssembler eventDtoAssembler
-                                 ) {
-        this.adminEventRepository = adminEventRepository;
+    ) {
+        this.eventRepository = eventRepository;
         this.categoryRepository = categoryRepository;
         this.eventDtoAssembler = eventDtoAssembler;
     }
@@ -49,7 +48,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
         Specification<Event> spec = EventSpecifications.withoutConditions();
 
-        if (searchParam!= null) {
+        if (searchParam != null) {
             spec = spec.and(EventSpecifications.eventDateAfter(searchParam.getRangeStart()))
                     .and(EventSpecifications.eventDateBefore(searchParam.getRangeEnd()))
                     .and(EventSpecifications.initiatorIdIn(searchParam.getUsers()))
@@ -57,7 +56,7 @@ public class AdminEventServiceImpl implements AdminEventService {
                     .and(EventSpecifications.stateIn(searchParam.getStates()));
         }
 
-        List<Event> events = adminEventRepository.findAll(spec, pageable).getContent();
+        List<Event> events = eventRepository.findAll(spec, pageable).getContent();
 
         log.info("Найдено {} событий, соответствующих критериям.", events.size());
 
@@ -68,7 +67,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     public EventFullDto updateEvent(Long eventId, UpdateEventAdminRequestDto request) {
         log.info("Обновление события с id: {}, запрос: {}", eventId, request);
 
-        Event event = adminEventRepository.findById(eventId).orElseThrow(
+        Event event = eventRepository.findById(eventId).orElseThrow(
                 () -> new NotFoundException("Событие с id " + eventId + " не найдено.")
         );
 
@@ -111,7 +110,7 @@ public class AdminEventServiceImpl implements AdminEventService {
             }
         }
 
-        Event updatedEvent = adminEventRepository.save(event);
+        Event updatedEvent = eventRepository.save(event);
 
         log.info("Событие с ID {} обновлено.", eventId);
 

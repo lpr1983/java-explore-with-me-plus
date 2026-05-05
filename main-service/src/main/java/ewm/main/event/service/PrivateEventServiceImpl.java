@@ -8,7 +8,7 @@ import ewm.main.dto.UpdateEventUserRequestDto;
 import ewm.main.event.mapper.EventMapper;
 import ewm.main.event.model.Event;
 import ewm.main.event.model.EventState;
-import ewm.main.event.repository.PrivateEventRepository;
+import ewm.main.event.repository.EventRepository;
 import ewm.main.exception.ConflictException;
 import ewm.main.request.mapper.ParticipationRequestMapper;
 import ewm.main.request.model.ParticipationRequest;
@@ -38,7 +38,7 @@ import java.util.List;
 @Service
 public class PrivateEventServiceImpl implements PrivateEventService {
     private final UserRepository userRepository;
-    private final PrivateEventRepository privateEventRepository;
+    private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
 
     private final ParticipationRequestRepository participationRequestRepository;
@@ -46,12 +46,12 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     private final EventDtoAssembler eventDtoAssembler;
 
     public PrivateEventServiceImpl(UserRepository userRepository,
-                                   PrivateEventRepository privateEventRepository,
+                                   EventRepository eventRepository,
                                    CategoryRepository categoryRepository,
                                    EventDtoAssembler eventDtoAssembler,
                                    ParticipationRequestRepository participationRequestRepository) {
         this.userRepository = userRepository;
-        this.privateEventRepository = privateEventRepository;
+        this.eventRepository = eventRepository;
         this.categoryRepository = categoryRepository;
         this.eventDtoAssembler = eventDtoAssembler;
         this.participationRequestRepository = participationRequestRepository;
@@ -74,7 +74,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
         Pageable pageable = PageRequest.of(from / size, size);
 
-        List<Event> events = privateEventRepository.findPrivateEventsByUserId(userId, pageable);
+        List<Event> events = eventRepository.findByInitiator_IdOrderByEventDateAsc(userId, pageable);
 
         log.info("Количество событий: {}", events.size());
 
@@ -94,7 +94,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         Event event = EventMapper.toEntity(dto, category, user);
         event.setCreatedOn(LocalDateTime.now());
         event.setState(EventState.PENDING);
-        Event savedEvent = privateEventRepository.save(event);
+        Event savedEvent = eventRepository.save(event);
         log.info("Событие успешно создано с id: {}", savedEvent.getId());
 
         return eventDtoAssembler.toFullDto(savedEvent);
@@ -124,7 +124,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
             }
         }
 
-        Event updatedEvent = privateEventRepository.save(event);
+        Event updatedEvent = eventRepository.save(event);
         log.info("Событие успешно обновлено с id: {}", updatedEvent.getId());
 
         return eventDtoAssembler.toFullDto(updatedEvent);
@@ -134,13 +134,13 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     public List<ParticipationRequestDto> getRequestsForEvent(long userId, long eventId) {
         log.info("Получение заявок на участие для userId: {} и eventId: {}", userId, eventId);
 
-        if (privateEventRepository.findOneByInitiator_IdAndId(userId, eventId).isEmpty()) {
+        if (eventRepository.findOneByInitiator_IdAndId(userId, eventId).isEmpty()) {
             return Collections.emptyList();
         }
 
         return participationRequestRepository.findAllByEventId(eventId)
                 .stream()
-                .map((r) -> ParticipationRequestMapper.toDto(r))
+                .map(ParticipationRequestMapper::toDto)
                 .toList();
     }
 
@@ -156,7 +156,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         Event event = findEventByUserIdAndEventIdOrThrow(userId, eventId);
 
         List<Long> requestIds = dto.getRequestIds();
-        if (requestIds.size() == 0) {
+        if (requestIds.isEmpty()) {
             return new EventRequestStatusUpdateResultDto(Collections.emptyList(),
                     Collections.emptyList());
         }
@@ -255,7 +255,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     }
 
     private Event findEventByUserIdAndEventIdOrThrow(long userId, long eventId) {
-        return privateEventRepository.findOneByInitiator_IdAndId(userId, eventId)
+        return eventRepository.findOneByInitiator_IdAndId(userId, eventId)
                 .orElseThrow(() -> new NotFoundException(
                         String.format("У пользователя с id: %d нет события с id: %d", userId, eventId)));
     }

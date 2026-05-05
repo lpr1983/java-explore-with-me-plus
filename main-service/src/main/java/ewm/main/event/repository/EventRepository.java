@@ -9,13 +9,21 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.util.List;
 import java.util.Optional;
 
-public interface PublicEventRepository extends JpaRepository<Event, Long>,
+public interface EventRepository extends JpaRepository<Event, Long>,
         JpaSpecificationExecutor<Event> {
 
     @EntityGraph(attributePaths = {"initiator", "category"})
     Page<Event> findAll(Specification<Event> specification, Pageable pageable);
 
-    Optional<Event> findOneByIdAndState(Long id, EventState state);
+    @EntityGraph(attributePaths = {"initiator", "category"})
+    List<Event> findByInitiator_IdOrderByEventDateAsc(long userId, Pageable pageable);
+
+    Optional<Event> findOneByInitiator_IdAndId(long userId, long eventId);
+
+    Optional<Event> findOneByIdAndState(long id, EventState state);
+
+    boolean existsByCategory_Id(long categoryId);
 }

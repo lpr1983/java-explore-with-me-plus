@@ -21,7 +21,6 @@ import java.util.Set;
 
 @Component
 public class EventDtoAssembler {
-
     private static final boolean UNIQUE_VIEWS = true;
 
     private final StatService statService;

@@ -3,7 +3,7 @@ package ewm.main.request.service;
 import ewm.main.dto.ParticipationRequestDto;
 import ewm.main.event.model.Event;
 import ewm.main.event.model.EventState;
-import ewm.main.event.repository.PrivateEventBaseStorage;
+import ewm.main.event.repository.EventRepository;
 import ewm.main.exception.ConflictException;
 import ewm.main.exception.NotFoundException;
 import ewm.main.request.mapper.ParticipationRequestMapper;
@@ -28,7 +28,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
 
     private final ParticipationRequestRepository requestRepository;
     private final UserRepository userRepository;
-    private final PrivateEventBaseStorage eventRepository;
+    private final EventRepository eventRepository;
 
     @Override
     public List<ParticipationRequestDto> getRequests(long userId) {
@@ -71,8 +71,11 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
             }
         }
 
-        // если модерация отключена — сразу подтверждаем
-        RequestStatus status = (event.isRequestModeration() || limit == 0) ? RequestStatus.PENDING : RequestStatus.CONFIRMED;
+        // если модерация отключена или количество участников не ограничено — сразу подтверждаем
+        RequestStatus status = RequestStatus.PENDING;
+        if (!event.isRequestModeration() || limit == 0) {
+            status = RequestStatus.CONFIRMED;
+        }
 
         ParticipationRequest request = ParticipationRequest.builder()
                 .event(event)
@@ -110,7 +113,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
     }
 
     private Event findEventOrThrow(long eventId) {
-        return eventRepository.findById((int) eventId)
+        return eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Событие с id=" + eventId + " не найдено"));
     }
 }
