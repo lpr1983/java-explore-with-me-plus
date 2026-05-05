@@ -7,16 +7,17 @@ import ewm.main.dto.EventShortDto;
 import ewm.main.dto.NewEventDto;
 import ewm.main.dto.ParticipationRequestDto;
 import ewm.main.dto.UpdateEventUserRequestDto;
+import ewm.main.event.model.search.PageParam;
 import ewm.main.event.service.PrivateEventService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,10 +40,9 @@ public class PrivateEventController {
 
     @GetMapping("/{userId}/events")
     List<EventShortDto> getAllByUserId(@PathVariable long userId,
-                                       @RequestParam(required = false, defaultValue = "0") int from,
-                                       @RequestParam(required = false, defaultValue = "10") int size) {
+                                       @Valid @ModelAttribute PageParam pageParam) {
 
-        return privateEventService.getAllByUserId(userId, from, size);
+        return privateEventService.getAllByUserId(userId, pageParam);
     }
 
     @GetMapping("/{userId}/events/{eventId}")

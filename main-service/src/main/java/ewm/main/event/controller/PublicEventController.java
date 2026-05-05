@@ -32,8 +32,8 @@ public class PublicEventController {
     }
 
     @GetMapping
-    public List<EventShortDto> getEvents(@Valid PublicEventSearchParam searchParam,
-                                         @Valid PageParam pageParam,
+    public List<EventShortDto> getEvents(@Valid @ModelAttribute PublicEventSearchParam searchParam,
+                                         @Valid @ModelAttribute PageParam pageParam,
                                          HttpServletRequest request) {
 
         statService.saveHit(request.getRequestURI(), request.getRemoteAddr());

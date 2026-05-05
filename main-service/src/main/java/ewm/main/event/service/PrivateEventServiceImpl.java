@@ -8,6 +8,7 @@ import ewm.main.dto.UpdateEventUserRequestDto;
 import ewm.main.event.mapper.EventMapper;
 import ewm.main.event.model.Event;
 import ewm.main.event.model.EventState;
+import ewm.main.event.model.search.PageParam;
 import ewm.main.event.repository.EventRepository;
 import ewm.main.exception.ConflictException;
 import ewm.main.request.mapper.ParticipationRequestMapper;
@@ -69,10 +70,10 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     }
 
     @Override
-    public List<EventShortDto> getAllByUserId(long userId, int from, int size) {
-        log.info("Получение событий для userId: {}, с: {}, размер: {}", userId, from, size);
+    public List<EventShortDto> getAllByUserId(long userId, PageParam pageParam) {
+        log.info("Получение событий для userId: {}, с: {}, размер: {}", userId, pageParam);
 
-        Pageable pageable = PageRequest.of(from / size, size);
+        Pageable pageable = PageRequest.of(pageParam.getFrom() / pageParam.getSize(), pageParam.getSize());
 
         List<Event> events = eventRepository.findByInitiator_IdOrderByEventDateAsc(userId, pageable);
 
@@ -147,6 +148,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     @Override
     @Transactional
     public EventRequestStatusUpdateResultDto setRequestsStatus(long userId, long eventId, EventRequestStatusUpdateRequestDto dto) {
+        log.info("Установка статуса заявок на участие для userId: {}, eventId: {}, dto: ", userId, eventId, dto);
         RequestStatus statusToUpdate = RequestStatus.parse(dto.getStatus());
 
         if (statusToUpdate != RequestStatus.CONFIRMED && statusToUpdate != RequestStatus.REJECTED) {
@@ -215,6 +217,8 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         resultDto.setConfirmedRequests(confirmRequests.stream().map(ParticipationRequestMapper::toDto).toList());
         resultDto.setRejectedRequests(rejectedRequests.stream().map(ParticipationRequestMapper::toDto).toList());
 
+        log.info("Результат установки статуса CONFIRMED: {}", resultDto);
+
         return resultDto;
     }
 
@@ -240,6 +244,8 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         EventRequestStatusUpdateResultDto resultDto = new EventRequestStatusUpdateResultDto();
         resultDto.setConfirmedRequests(Collections.emptyList());
         resultDto.setRejectedRequests(rejectedRequests.stream().map(ParticipationRequestMapper::toDto).toList());
+
+        log.info("Результат установки статуса REJECTED: {}", resultDto);
 
         return resultDto;
     }

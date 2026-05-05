@@ -7,6 +7,7 @@ import ewm.main.dto.EventShortDto;
 import ewm.main.dto.NewEventDto;
 import ewm.main.dto.ParticipationRequestDto;
 import ewm.main.dto.UpdateEventUserRequestDto;
+import ewm.main.event.model.search.PageParam;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public interface PrivateEventService {
 
     EventFullDto createEvent(long userId, NewEventDto dto);
 
-    List<EventShortDto> getAllByUserId(long userId, int from, int size);
+    List<EventShortDto> getAllByUserId(long userId, PageParam pageParam);
 
     EventFullDto getEventOfUserById(long userId, long eventId);
 
