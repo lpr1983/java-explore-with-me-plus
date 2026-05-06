@@ -16,6 +16,7 @@ import ewm.main.request.model.ParticipationRequest;
 import ewm.main.request.model.RequestStatus;
 import ewm.main.request.repository.ParticipationRequestRepository;
 import jakarta.validation.ValidationException;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import ewm.main.category.Category;
@@ -37,26 +38,13 @@ import java.util.List;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class PrivateEventServiceImpl implements PrivateEventService {
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
-
     private final ParticipationRequestRepository participationRequestRepository;
-
     private final EventDtoAssembler eventDtoAssembler;
-
-    public PrivateEventServiceImpl(UserRepository userRepository,
-                                   EventRepository eventRepository,
-                                   CategoryRepository categoryRepository,
-                                   EventDtoAssembler eventDtoAssembler,
-                                   ParticipationRequestRepository participationRequestRepository) {
-        this.userRepository = userRepository;
-        this.eventRepository = eventRepository;
-        this.categoryRepository = categoryRepository;
-        this.eventDtoAssembler = eventDtoAssembler;
-        this.participationRequestRepository = participationRequestRepository;
-    }
 
     @Override
     public EventFullDto getEventOfUserById(long userId, long eventId) {

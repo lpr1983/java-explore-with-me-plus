@@ -14,6 +14,7 @@ import ewm.main.event.repository.EventRepository;
 import ewm.main.event.repository.EventSpecifications;
 import ewm.main.exception.ConflictException;
 import ewm.main.exception.NotFoundException;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,19 +27,11 @@ import java.util.List;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class AdminEventServiceImpl implements AdminEventService {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
     private final EventDtoAssembler eventDtoAssembler;
-
-    public AdminEventServiceImpl(EventRepository eventRepository,
-                                 CategoryRepository categoryRepository,
-                                 EventDtoAssembler eventDtoAssembler
-    ) {
-        this.eventRepository = eventRepository;
-        this.categoryRepository = categoryRepository;
-        this.eventDtoAssembler = eventDtoAssembler;
-    }
 
     @Override
     public List<EventFullDto> searchEvents(AdminEventSearchParam searchParam, PageParam pageParam) {

@@ -8,6 +8,7 @@ import ewm.main.event.service.PublicEventService;
 import ewm.main.stat.StatService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,20 +17,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/events")
 @Slf4j
+@AllArgsConstructor
 public class PublicEventController {
-
     private final PublicEventService publicEventService;
     private final StatService statService;
-
-    public PublicEventController(PublicEventService publicEventService, StatService statService) {
-        this.publicEventService = publicEventService;
-        this.statService = statService;
-    }
-
-    @GetMapping("/test")
-    String test() {
-        return "main-service test: it works";
-    }
 
     @GetMapping
     public List<EventShortDto> getEvents(@Valid @ModelAttribute PublicEventSearchParam searchParam,

@@ -4,7 +4,7 @@ import ewm.stat.dto.HitDto;
 import ewm.stat.dto.StatDto;
 import ewm.stat.server.service.StatService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,15 +18,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 public class StatController {
-
-    @Autowired
-    StatService statService;
-
-    @GetMapping("/test")
-    public String test() {
-        return "stats: it works";
-    }
+    private final StatService statService;
 
     @PostMapping("/hit")
     @ResponseStatus(HttpStatus.CREATED)

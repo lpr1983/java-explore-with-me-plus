@@ -10,6 +10,7 @@ import ewm.main.dto.UpdateEventUserRequestDto;
 import ewm.main.event.model.search.PageParam;
 import ewm.main.event.service.PrivateEventService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -25,12 +26,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@AllArgsConstructor
 public class PrivateEventController {
     private final PrivateEventService privateEventService;
-
-    public PrivateEventController(PrivateEventService privateEventService) {
-        this.privateEventService = privateEventService;
-    }
 
     @PostMapping("/{userId}/events")
     @ResponseStatus(HttpStatus.CREATED)

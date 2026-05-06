@@ -11,6 +11,7 @@ import ewm.main.event.repository.EventRepository;
 import ewm.main.event.repository.EventSpecifications;
 import ewm.main.exception.NotFoundException;
 import ewm.main.exception.ValidationException;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,16 +25,10 @@ import java.util.List;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class PublicEventServiceImpl implements PublicEventService {
-
     private final EventRepository eventRepository;
     private final EventDtoAssembler eventDtoAssembler;
-
-    public PublicEventServiceImpl(EventRepository eventRepository,
-                                  EventDtoAssembler eventDtoAssembler) {
-        this.eventRepository = eventRepository;
-        this.eventDtoAssembler = eventDtoAssembler;
-    }
 
     @Override
     public List<EventShortDto> getEvents(PublicEventSearchParam searchParam, PageParam pageParam) {
