@@ -7,10 +7,11 @@ import ewm.main.event.model.search.EventSort;
 import ewm.main.event.model.EventState;
 import ewm.main.event.model.search.PageParam;
 import ewm.main.event.model.search.PublicEventSearchParam;
+import ewm.main.event.repository.EventRepository;
 import ewm.main.event.repository.EventSpecifications;
-import ewm.main.event.repository.PublicEventRepository;
 import ewm.main.exception.NotFoundException;
 import ewm.main.exception.ValidationException;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,16 +25,10 @@ import java.util.List;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class PublicEventServiceImpl implements PublicEventService {
-
-    private final PublicEventRepository publicEventRepository;
+    private final EventRepository eventRepository;
     private final EventDtoAssembler eventDtoAssembler;
-
-    public PublicEventServiceImpl(PublicEventRepository publicEventRepository,
-                                  EventDtoAssembler eventDtoAssembler) {
-        this.publicEventRepository = publicEventRepository;
-        this.eventDtoAssembler = eventDtoAssembler;
-    }
 
     @Override
     public List<EventShortDto> getEvents(PublicEventSearchParam searchParam, PageParam pageParam) {
@@ -79,7 +74,7 @@ public class PublicEventServiceImpl implements PublicEventService {
                 Sort.by(Sort.Direction.ASC, "eventDate")
         );
 
-        List<Event> events = publicEventRepository.findAll(specification, pageable).getContent();
+        List<Event> events = eventRepository.findAll(specification, pageable).getContent();
 
         log.info("Найдено {} событий, соответствующих критериям.", events.size());
 
@@ -88,7 +83,7 @@ public class PublicEventServiceImpl implements PublicEventService {
 
     private List<EventShortDto> getEventsSortedByViews(Specification<Event> specification,
                                                        PageParam pageParam) {
-        List<Event> events = publicEventRepository.findAll(specification);
+        List<Event> events = eventRepository.findAll(specification);
         log.info("Найдено {} событий для сортировки по просмотрам.", events.size());
 
         List<EventShortDto> dtos = eventDtoAssembler.toShortDtoList(events);
@@ -112,7 +107,7 @@ public class PublicEventServiceImpl implements PublicEventService {
     @Override
     public EventFullDto getEventById(Long id) {
 
-        Event event = publicEventRepository.findOneByIdAndState(id, EventState.PUBLISHED)
+        Event event = eventRepository.findOneByIdAndState(id, EventState.PUBLISHED)
                 .orElseThrow(() -> new NotFoundException("Событие с id: " + id + " не найдено или недоступно"));
 
         return eventDtoAssembler.toFullDto(event);

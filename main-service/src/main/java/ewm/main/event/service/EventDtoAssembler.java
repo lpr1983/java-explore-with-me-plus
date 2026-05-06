@@ -4,6 +4,9 @@ import ewm.main.dto.EventFullDto;
 import ewm.main.dto.EventShortDto;
 import ewm.main.event.mapper.EventMapper;
 import ewm.main.event.model.Event;
+import ewm.main.request.model.RequestStatus;
+import ewm.main.request.repository.EventConfirmedRequestsCount;
+import ewm.main.request.repository.ParticipationRequestRepository;
 import ewm.main.stat.StatService;
 import ewm.stat.client.model.GetStatsParams;
 import org.springframework.stereotype.Component;
@@ -18,19 +21,22 @@ import java.util.Set;
 
 @Component
 public class EventDtoAssembler {
-
-    private static final boolean UNIQUE_VIEWS = false;
+    private static final boolean UNIQUE_VIEWS = true;
 
     private final StatService statService;
+    private final ParticipationRequestRepository participationRequestRepository;
 
-    public EventDtoAssembler(StatService statService) {
+    public EventDtoAssembler(StatService statService,
+                             ParticipationRequestRepository participationRequestRepository) {
         this.statService = statService;
+        this.participationRequestRepository = participationRequestRepository;
     }
 
     public EventShortDto toShortDto(Event event) {
         EventShortDto dto = EventMapper.toShortDto(event);
 
         dto.setViews(getViews(event));
+        dto.setConfirmedRequests(getConfirmedRequests(event));
 
         return dto;
     }
@@ -39,18 +45,21 @@ public class EventDtoAssembler {
         EventFullDto dto = EventMapper.toFullDto(event);
 
         dto.setViews(getViews(event));
+        dto.setConfirmedRequests(getConfirmedRequests(event));
 
         return dto;
     }
 
     public List<EventShortDto> toShortDtoList(List<Event> events) {
-        Map<Long, Long> viewsByEventId = getViewsByEventsId(events);
+        Map<Long, Long> viewsByEventId = getViewsByEventId(events);
+        Map<Long, Long> confirmedRequestsByEventId = getConfirmedRequestsByEventId(events);
 
         List<EventShortDto> result = new ArrayList<>();
 
         for (Event event : events) {
             EventShortDto dto = EventMapper.toShortDto(event);
             dto.setViews(getViewsForEvent(event, viewsByEventId));
+            dto.setConfirmedRequests(getConfirmedRequestsForEvent(event, confirmedRequestsByEventId));
             result.add(dto);
         }
 
@@ -58,17 +67,52 @@ public class EventDtoAssembler {
     }
 
     public List<EventFullDto> toFullDtoList(List<Event> events) {
-        Map<Long, Long> viewsByEventId = getViewsByEventsId(events);
+        Map<Long, Long> viewsByEventId = getViewsByEventId(events);
+        Map<Long, Long> confirmedRequestsByEventId = getConfirmedRequestsByEventId(events);
 
         List<EventFullDto> result = new ArrayList<>();
 
         for (Event event : events) {
             EventFullDto dto = EventMapper.toFullDto(event);
             dto.setViews(getViewsForEvent(event, viewsByEventId));
+            dto.setConfirmedRequests(getConfirmedRequestsForEvent(event, confirmedRequestsByEventId));
             result.add(dto);
         }
 
         return result;
+    }
+
+    private Long getConfirmedRequests(Event event) {
+        return participationRequestRepository.countByEventIdAndStatus(
+                event.getId(),
+                RequestStatus.CONFIRMED
+        );
+    }
+
+    private Map<Long, Long> getConfirmedRequestsByEventId(List<Event> events) {
+        if (events.isEmpty()) {
+            return Map.of();
+        }
+
+        List<Long> eventIds = getEventIds(events);
+
+        List<EventConfirmedRequestsCount> counts =
+                participationRequestRepository.countConfirmedRequestsByEventIds(
+                        eventIds,
+                        RequestStatus.CONFIRMED
+                );
+
+        Map<Long, Long> result = new HashMap<>();
+
+        for (EventConfirmedRequestsCount count : counts) {
+            result.put(count.getEventId(), count.getConfirmedRequests());
+        }
+
+        return result;
+    }
+
+    private Long getConfirmedRequestsForEvent(Event event, Map<Long, Long> confirmedRequestsByEventId) {
+        return confirmedRequestsByEventId.getOrDefault(event.getId(), 0L);
     }
 
     private Long getViews(Event event) {
@@ -94,7 +138,7 @@ public class EventDtoAssembler {
         return viewsByUri.getOrDefault(uri, 0L);
     }
 
-    private Map<Long, Long> getViewsByEventsId(List<Event> events) {
+    private Map<Long, Long> getViewsByEventId(List<Event> events) {
         List<Event> eventsWithPublishedOn = getEventsWithPublishedOn(events);
 
         if (eventsWithPublishedOn.isEmpty()) {
@@ -144,6 +188,16 @@ public class EventDtoAssembler {
         }
 
         return result;
+    }
+
+    private List<Long> getEventIds(List<Event> events) {
+        Set<Long> uniqueIds = new LinkedHashSet<>();
+
+        for (Event event : events) {
+            uniqueIds.add(event.getId());
+        }
+
+        return new ArrayList<>(uniqueIds);
     }
 
     private List<String> getEventUris(List<Event> events) {

@@ -5,7 +5,9 @@ import ewm.main.category.mapper.CategoryMapper;
 import ewm.main.category.repository.CategoryRepository;
 import ewm.main.dto.CategoryDto;
 import ewm.main.dto.NewCategoryDto;
+import ewm.main.event.repository.EventRepository;
 import ewm.main.exception.ConflictException;
+import ewm.main.exception.DataIntegrityViolationException;
 import ewm.main.exception.NotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -21,11 +23,12 @@ import java.util.stream.Collectors;
 public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final EntityManager entityManager;
+    private final EventRepository eventRepository;
 
     @Transactional
     public CategoryDto add(NewCategoryDto dto) {
         if (checkForNameCollisions(dto)) {
-            throw new ConflictException("category already exists");
+            throw new DataIntegrityViolationException("category already exists");
         }
         Category newCategory = categoryRepository.save(CategoryMapper.toEntity(dto));
         return CategoryMapper.toDto(newCategory);
@@ -35,7 +38,7 @@ public class CategoryService {
     public CategoryDto patchById(Long categoryId, NewCategoryDto dto) {
         Category existingCategory = categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundException("no category found"));
         if (checkForNameAndIdCollisions(dto, categoryId)) {
-            throw new ConflictException("category already exists");
+            throw new DataIntegrityViolationException("category already exists");
         }
 
         if (!Objects.isNull(dto.getName())) {
@@ -48,6 +51,10 @@ public class CategoryService {
     @Transactional
     public void deleteOne(Long categoryId) {
         Category existingCategory = categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundException("no category found"));
+
+        if (eventRepository.existsByCategory_Id(categoryId)) {
+            throw new ConflictException("Нельзя удалить категорию, к которой привязаны события");
+        }
 
         categoryRepository.delete(existingCategory);
     }
@@ -71,6 +78,6 @@ public class CategoryService {
     }
 
     private boolean checkForNameAndIdCollisions(NewCategoryDto dto, Long id) {
-        return categoryRepository.countByNameExcludingId(id,dto.getName()) > 0;
+        return categoryRepository.countByNameExcludingId(id, dto.getName()) > 0;
     }
 }

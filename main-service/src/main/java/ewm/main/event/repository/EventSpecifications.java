@@ -12,6 +12,10 @@ public final class EventSpecifications {
     private EventSpecifications() {
     }
 
+    public static Specification<Event> withoutConditions() {
+        return (root, query, cb) -> cb.conjunction();
+    }
+
     public static Specification<Event> paid(Boolean paid) {
         if (paid == null) {
             return null;

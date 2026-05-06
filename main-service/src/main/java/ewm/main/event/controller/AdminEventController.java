@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,8 +27,8 @@ public class AdminEventController {
 
     @GetMapping
     public List<EventFullDto> searchEvents(
-            @Valid AdminEventSearchParam searchParam,
-            @Valid PageParam pageParam
+            @Valid @ModelAttribute AdminEventSearchParam searchParam,
+            @Valid @ModelAttribute PageParam pageParam
     ) {
         return adminEventService.searchEvents(searchParam, pageParam);
     }
