@@ -3,6 +3,8 @@ package ewm.main.compilation.controller;
 import ewm.main.compilation.service.CompilationService;
 import ewm.main.dto.CompilationDto;
 import ewm.main.dto.NewCompilationDto;
+import ewm.main.dto.UpdateCompilationRequestDto;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +17,7 @@ public class AdminCompilationController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public CompilationDto add(@RequestBody NewCompilationDto dto) {
+    public CompilationDto add(@Valid @RequestBody NewCompilationDto dto) {
         return service.add(dto);
     }
 
@@ -26,7 +28,7 @@ public class AdminCompilationController {
     }
 
     @PatchMapping("{id}")
-    public CompilationDto update(@PathVariable Long id, @RequestBody NewCompilationDto dto) {
+    public CompilationDto update(@PathVariable Long id, @Valid @RequestBody UpdateCompilationRequestDto dto) {
         return service.update(id, dto);
     }
 }

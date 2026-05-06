@@ -5,33 +5,34 @@ import ewm.main.compilation.model.Compilation;
 import ewm.main.compilation.repository.CompilationRepository;
 import ewm.main.dto.CompilationDto;
 import ewm.main.dto.NewCompilationDto;
+import ewm.main.dto.UpdateCompilationRequestDto;
 import ewm.main.event.model.Event;
-import ewm.main.event.repository.PublicEventRepository;
+import ewm.main.event.repository.EventRepository;
 import ewm.main.exception.ConflictException;
 import ewm.main.exception.NotFoundException;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
-@Validated
 @AllArgsConstructor
 public class CompilationService {
     private final CompilationRepository compilationRepository;
-    private final PublicEventRepository eventRepository;
+    private final EventRepository eventRepository;
 
     @Transactional
-    public CompilationDto add(@Valid NewCompilationDto dto) {
+    public CompilationDto add(NewCompilationDto dto) {
         if (isTitleTaken(dto.getTitle())) {
             throw new ConflictException("Compilation title already taken");
         }
-        List<Event> events = eventRepository.findAllById(dto.getEvents());
+        List<Event> events = List.of();
+        if (!Objects.isNull(dto.getEvents()) && !dto.getEvents().isEmpty()) {
+            events = eventRepository.findAllById(dto.getEvents());
+        }
 
         Compilation newCompilation = compilationRepository.save(CompilationMapper.toEntity(dto, events));
         return CompilationMapper.toDto(newCompilation);
@@ -46,7 +47,7 @@ public class CompilationService {
     }
 
     @Transactional
-    public CompilationDto update(Long id, @Valid NewCompilationDto dto) {
+    public CompilationDto update(Long id, UpdateCompilationRequestDto dto) {
         Compilation existing = compilationRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("no compilations found"));
 

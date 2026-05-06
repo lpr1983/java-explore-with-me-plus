@@ -20,6 +20,6 @@ public class NewCompilationDto {
     private Boolean pinned = false;
 
     @NotBlank
-    @Size(max = 50)
+    @Size(max = 50, message = "The name must not exceed 50 characters")
     private String title;
 }
