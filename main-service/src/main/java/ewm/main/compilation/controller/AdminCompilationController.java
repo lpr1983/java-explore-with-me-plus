@@ -26,7 +26,6 @@ public class AdminCompilationController {
     }
 
     @PatchMapping("{id}")
-    @ResponseStatus(HttpStatus.CREATED)
     public CompilationDto update(@PathVariable Long id, @RequestBody NewCompilationDto dto) {
         return service.update(id, dto);
     }
