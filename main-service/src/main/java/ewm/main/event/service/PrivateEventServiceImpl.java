@@ -1,13 +1,22 @@
 package ewm.main.event.service;
 
+import ewm.main.dto.EventRequestStatusUpdateRequestDto;
+import ewm.main.dto.EventRequestStatusUpdateResultDto;
 import ewm.main.dto.EventShortDto;
+import ewm.main.dto.ParticipationRequestDto;
 import ewm.main.dto.UpdateEventUserRequestDto;
 import ewm.main.event.mapper.EventMapper;
 import ewm.main.event.model.Event;
-import ewm.main.event.model.EventStatus;
-import ewm.main.event.repository.PrivateEventBaseStorage;
+import ewm.main.event.model.EventState;
+import ewm.main.event.model.search.PageParam;
+import ewm.main.event.repository.EventRepository;
 import ewm.main.exception.ConflictException;
+import ewm.main.request.mapper.ParticipationRequestMapper;
+import ewm.main.request.model.ParticipationRequest;
+import ewm.main.request.model.RequestStatus;
+import ewm.main.request.repository.ParticipationRequestRepository;
 import jakarta.validation.ValidationException;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import ewm.main.category.Category;
@@ -20,52 +29,50 @@ import ewm.main.user.UserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class PrivateEventServiceImpl implements PrivateEventService {
     private final UserRepository userRepository;
-    private final PrivateEventBaseStorage privateEventBaseStorage;
+    private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
-
-    public PrivateEventServiceImpl(UserRepository userRepository,
-                                   PrivateEventBaseStorage privateEventBaseStorage,
-                                   CategoryRepository categoryRepository) {
-        this.userRepository = userRepository;
-        this.privateEventBaseStorage = privateEventBaseStorage;
-        this.categoryRepository = categoryRepository;
-    }
+    private final ParticipationRequestRepository participationRequestRepository;
+    private final EventDtoAssembler eventDtoAssembler;
 
     @Override
     public EventFullDto getEventOfUserById(long userId, long eventId) {
-        log.info("Get event for userId: {}, eventId: {}", userId, eventId);
+        log.info("Получение события для userId: {}, eventId: {}", userId, eventId);
 
         Event event = findEventByUserIdAndEventIdOrThrow(userId, eventId);
 
-        log.info("Event has gotten successfully, eventId: {}", eventId);
-        return EventMapper.toFullDto(event, 0, 0);
+        log.info("Событие успешно получено, eventId: {}", eventId);
+
+        return eventDtoAssembler.toFullDto(event);
     }
 
     @Override
-    public List<EventShortDto> getAllByUserId(long userId, int from, int size) {
-        log.info("Getting events for userId: {}, from: {}, size: {}", userId, from, size);
+    public List<EventShortDto> getAllByUserId(long userId, PageParam pageParam) {
+        log.info("Получение событий для userId: {}, с: {}, размер: {}", userId, pageParam);
 
-        Pageable pageable = PageRequest.of(from / size, size);
+        Pageable pageable = PageRequest.of(pageParam.getFrom() / pageParam.getSize(), pageParam.getSize());
 
-        List<EventShortDto> events = privateEventBaseStorage.findPrivateEventsByUserId(userId, pageable).stream()
-                .map(e -> EventMapper.toShortDto(e, 0, 0))
-                .toList();
+        List<Event> events = eventRepository.findByInitiator_IdOrderByEventDateAsc(userId, pageable);
 
-        log.info("Number of events: {}", events.size());
-        return events;
+        log.info("Количество событий: {}", events.size());
+
+        return eventDtoAssembler.toShortDtoList(events);
     }
 
     @Override
     public EventFullDto createEvent(long userId, NewEventDto dto) {
-        log.info("Creating event for userId: {}, event details: {}", userId, dto);
+        log.info("Создание события для userId: {}, детали события: {}", userId, dto);
 
         validateEventDate(dto.getEventDate());
 
@@ -75,20 +82,20 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
         Event event = EventMapper.toEntity(dto, category, user);
         event.setCreatedOn(LocalDateTime.now());
-        event.setState(EventStatus.PENDING);
-        Event savedEvent = privateEventBaseStorage.save(event);
+        event.setState(EventState.PENDING);
+        Event savedEvent = eventRepository.save(event);
+        log.info("Событие успешно создано с id: {}", savedEvent.getId());
 
-        log.info("Event created successfully with id: {}", savedEvent.getId());
-        return EventMapper.toFullDto(savedEvent, 0, 0);
+        return eventDtoAssembler.toFullDto(savedEvent);
     }
 
     @Override
     public EventFullDto updateEventOfUser(long userId, long eventId, UpdateEventUserRequestDto dto) {
-        log.info("Updating event for userId: {}, eventId: {}, update details: {}", userId, eventId, dto);
+        log.info("Обновление события для userId: {}, eventId: {}, детали обновления: {}", userId, eventId, dto);
 
         Event event = findEventByUserIdAndEventIdOrThrow(userId, eventId);
 
-        if (event.getState() != EventStatus.PENDING && event.getState() != EventStatus.CANCELED) {
+        if (event.getState() != EventState.PENDING && event.getState() != EventState.CANCELED) {
             throw new ConflictException("Можно изменять события только в статусах PENDING и CANCELED");
         }
 
@@ -100,16 +107,135 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
         if (dto.getStateAction() != null) {
             switch (dto.getStateAction()) {
-                case "SEND_TO_REVIEW" -> event.setState(EventStatus.PENDING);
-                case "CANCEL_REVIEW" -> event.setState(EventStatus.CANCELED);
+                case "SEND_TO_REVIEW" -> event.setState(EventState.PENDING);
+                case "CANCEL_REVIEW" -> event.setState(EventState.CANCELED);
                 default -> throw new ValidationException("Недопустимое действие: " + dto.getStateAction());
             }
         }
 
-        Event updatedEvent = privateEventBaseStorage.save(event);
+        Event updatedEvent = eventRepository.save(event);
+        log.info("Событие успешно обновлено с id: {}", updatedEvent.getId());
 
-        log.info("Event updated successfully with id: {}", updatedEvent.getId());
-        return EventMapper.toFullDto(updatedEvent, 0, 0);
+        return eventDtoAssembler.toFullDto(updatedEvent);
+    }
+
+    @Override
+    public List<ParticipationRequestDto> getRequestsForEvent(long userId, long eventId) {
+        log.info("Получение заявок на участие для userId: {} и eventId: {}", userId, eventId);
+
+        if (eventRepository.findOneByInitiator_IdAndId(userId, eventId).isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return participationRequestRepository.findAllByEventId(eventId)
+                .stream()
+                .map(ParticipationRequestMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public EventRequestStatusUpdateResultDto setRequestsStatus(long userId, long eventId, EventRequestStatusUpdateRequestDto dto) {
+        log.info("Установка статуса заявок на участие для userId: {}, eventId: {}, dto: ", userId, eventId, dto);
+        RequestStatus statusToUpdate = RequestStatus.parse(dto.getStatus());
+
+        if (statusToUpdate != RequestStatus.CONFIRMED && statusToUpdate != RequestStatus.REJECTED) {
+            throw new ConflictException("Недопустимый статус для этой операции:" + statusToUpdate);
+        }
+
+        Event event = findEventByUserIdAndEventIdOrThrow(userId, eventId);
+
+        List<Long> requestIds = dto.getRequestIds();
+        if (requestIds.isEmpty()) {
+            return new EventRequestStatusUpdateResultDto(Collections.emptyList(),
+                    Collections.emptyList());
+        }
+
+        List<Long> distinctIds = dto.getRequestIds().stream().distinct().toList();
+
+        if (statusToUpdate == RequestStatus.CONFIRMED) {
+            return confirmRequests(event, distinctIds);
+        }
+
+        return rejectRequests(event, distinctIds);
+    }
+
+    private EventRequestStatusUpdateResultDto confirmRequests(Event event, List<Long> requestIds) {
+
+        int participantsLimit = event.getParticipantLimit();
+        if (!event.isRequestModeration() || participantsLimit == 0) {
+            throw new ConflictException("Подтверждение заявок не требуется");
+        }
+
+        long confirmedRequests = participationRequestRepository.countByEventIdAndStatus(event.getId(), RequestStatus.CONFIRMED);
+        long available = participantsLimit - confirmedRequests;
+
+        if (requestIds.size() > available) {
+            throw new ConflictException("Превышен лимит участников");
+        }
+
+        List<ParticipationRequest> requests = participationRequestRepository.findAllByIdInAndEvent_Id(requestIds, event.getId());
+        if (requests.size() < requestIds.size()) {
+            throw new NotFoundException("Найдены не все заявки");
+        }
+
+        List<ParticipationRequest> confirmRequests = new ArrayList<>();
+        List<ParticipationRequest> rejectedRequests = new ArrayList<>();
+
+        for (ParticipationRequest request : requests) {
+            RequestStatus currentStatus = request.getStatus();
+            if (currentStatus != RequestStatus.PENDING) {
+                throw new ConflictException("Нельзя изменить статус заявки с id: " + request.getId() + ", она в статусе:" + currentStatus);
+            }
+
+            request.setStatus(RequestStatus.CONFIRMED);
+            confirmRequests.add(request);
+        }
+
+        if (available != 0 && available == requestIds.size()) {
+            List<ParticipationRequest> requestsToReject = participationRequestRepository.findAllByEvent_IdAndStatus(event.getId(),
+                    RequestStatus.PENDING);
+            for (ParticipationRequest request : requestsToReject) {
+                request.setStatus(RequestStatus.REJECTED);
+                rejectedRequests.add(request);
+            }
+        }
+
+        EventRequestStatusUpdateResultDto resultDto = new EventRequestStatusUpdateResultDto();
+        resultDto.setConfirmedRequests(confirmRequests.stream().map(ParticipationRequestMapper::toDto).toList());
+        resultDto.setRejectedRequests(rejectedRequests.stream().map(ParticipationRequestMapper::toDto).toList());
+
+        log.info("Результат установки статуса CONFIRMED: {}", resultDto);
+
+        return resultDto;
+    }
+
+    private EventRequestStatusUpdateResultDto rejectRequests(Event event, List<Long> requestIds) {
+
+        List<ParticipationRequest> requests = participationRequestRepository.findAllByIdInAndEvent_Id(requestIds, event.getId());
+        if (requests.size() < requestIds.size()) {
+            throw new NotFoundException("Найдены не все заявки");
+        }
+
+        List<ParticipationRequest> rejectedRequests = new ArrayList<>();
+
+        for (ParticipationRequest request : requests) {
+            RequestStatus currentStatus = request.getStatus();
+            if (currentStatus != RequestStatus.PENDING) {
+                throw new ConflictException("Нельзя изменить статус заявки с id: " + request.getId() + ", она в статусе:" + currentStatus);
+            }
+
+            request.setStatus(RequestStatus.REJECTED);
+            rejectedRequests.add(request);
+        }
+
+        EventRequestStatusUpdateResultDto resultDto = new EventRequestStatusUpdateResultDto();
+        resultDto.setConfirmedRequests(Collections.emptyList());
+        resultDto.setRejectedRequests(rejectedRequests.stream().map(ParticipationRequestMapper::toDto).toList());
+
+        log.info("Результат установки статуса REJECTED: {}", resultDto);
+
+        return resultDto;
     }
 
     private User findUserByIdOrThrow(long userId) {
@@ -123,12 +249,12 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     }
 
     private Event findEventByUserIdAndEventIdOrThrow(long userId, long eventId) {
-        return privateEventBaseStorage.findOneByInitiator_IdAndId(userId, eventId)
+        return eventRepository.findOneByInitiator_IdAndId(userId, eventId)
                 .orElseThrow(() -> new NotFoundException(
                         String.format("У пользователя с id: %d нет события с id: %d", userId, eventId)));
     }
 
-    private void validateEventDate (LocalDateTime eventDate){
+    private void validateEventDate(LocalDateTime eventDate) {
         if (eventDate != null && eventDate.isBefore(LocalDateTime.now().plusHours(2))) {
             throw new ConflictException("Дата события должна быть не ранее чем через 2 часа от текущего момента");
         }

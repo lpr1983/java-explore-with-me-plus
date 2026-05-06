@@ -7,6 +7,7 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -43,7 +44,7 @@ public class Event {
     @Column(name = "description", nullable = false, length = 7000)
     private String description;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
@@ -67,12 +68,12 @@ public class Event {
     @Column(name = "state", nullable = false)
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private EventStatus state = EventStatus.PENDING;
+    private EventState state = EventState.PENDING;
 
     @Column(name = "published_on")
     private LocalDateTime publishedOn;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "initiator_id", nullable = false)
     private User initiator;
 

@@ -5,6 +5,8 @@ import ewm.main.category.mapper.CategoryMapper;
 import ewm.main.category.repository.CategoryRepository;
 import ewm.main.dto.CategoryDto;
 import ewm.main.dto.NewCategoryDto;
+import ewm.main.event.repository.EventRepository;
+import ewm.main.exception.ConflictException;
 import ewm.main.exception.DataIntegrityViolationException;
 import ewm.main.exception.NotFoundException;
 import jakarta.persistence.EntityManager;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final EntityManager entityManager;
+    private final EventRepository eventRepository;
 
     @Transactional
     public CategoryDto add(NewCategoryDto dto) {
@@ -49,6 +52,10 @@ public class CategoryService {
     public void deleteOne(Long categoryId) {
         Category existingCategory = categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundException("no category found"));
 
+        if (eventRepository.existsByCategory_Id(categoryId)) {
+            throw new ConflictException("Нельзя удалить категорию, к которой привязаны события");
+        }
+
         categoryRepository.delete(existingCategory);
     }
 
@@ -71,6 +78,6 @@ public class CategoryService {
     }
 
     private boolean checkForNameAndIdCollisions(NewCategoryDto dto, Long id) {
-        return categoryRepository.countByNameExcludingId(id,dto.getName()) > 0;
+        return categoryRepository.countByNameExcludingId(id, dto.getName()) > 0;
     }
 }
