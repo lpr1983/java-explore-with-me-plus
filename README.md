@@ -38,6 +38,6 @@ docker-compose up
 Поднимаются:
 
 - `stats-server` — порт 9090
-- `stats-db` (PostgreSQL)
-- `ewm-service` — порт 8080 (заготовка основного сервиса)
-- `ewm-db` (PostgreSQL)
+- `stats-db` (PostgreSQL - БД сервиса статистики)
+- `ewm-service` — порт 8080 (основной сервис)
+- `ewm-db` (PostgreSQL - БД основного сервиса)
