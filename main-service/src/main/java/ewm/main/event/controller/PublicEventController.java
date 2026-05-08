@@ -2,8 +2,8 @@ package ewm.main.event.controller;
 
 import ewm.main.dto.EventFullDto;
 import ewm.main.dto.EventShortDto;
-import ewm.main.event.model.search.PageParam;
-import ewm.main.event.model.search.PublicEventSearchParam;
+import ewm.main.dto.search.PageParam;
+import ewm.main.dto.search.PublicEventSearchParam;
 import ewm.main.event.service.PublicEventService;
 import ewm.main.stat.StatService;
 import jakarta.servlet.http.HttpServletRequest;

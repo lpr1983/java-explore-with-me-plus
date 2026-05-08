@@ -1,4 +1,4 @@
-package ewm.main.event.model.search;
+package ewm.main.dto.search;
 
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;

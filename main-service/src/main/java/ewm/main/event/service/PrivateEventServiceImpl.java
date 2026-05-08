@@ -8,7 +8,7 @@ import ewm.main.dto.UpdateEventUserRequestDto;
 import ewm.main.event.mapper.EventMapper;
 import ewm.main.event.model.Event;
 import ewm.main.event.model.EventState;
-import ewm.main.event.model.search.PageParam;
+import ewm.main.dto.search.PageParam;
 import ewm.main.event.repository.EventRepository;
 import ewm.main.exception.ConflictException;
 import ewm.main.request.mapper.ParticipationRequestMapper;
