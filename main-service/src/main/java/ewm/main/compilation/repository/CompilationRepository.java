@@ -1,6 +1,7 @@
 package ewm.main.compilation.repository;
 
 import ewm.main.compilation.model.Compilation;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -26,4 +27,11 @@ public interface CompilationRepository extends JpaRepository<Compilation, Long> 
     List<Compilation> findAllWithLimitOffset(@Param("offset") Integer offset,
                                              @Param("limit") Integer limit
     );
+
+    @EntityGraph(attributePaths = {
+            "events",
+            "events.category",
+            "events.initiator"
+    })
+    List<Compilation> findByIdInOrderByIdAsc(List<Long> ids);
 }

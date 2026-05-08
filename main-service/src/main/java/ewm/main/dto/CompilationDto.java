@@ -9,7 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Builder
@@ -17,7 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class CompilationDto {
     @Valid
-    private Set<EventShortDto> events;
+    private List<EventShortDto> events;
 
     @NotNull
     private Long id;

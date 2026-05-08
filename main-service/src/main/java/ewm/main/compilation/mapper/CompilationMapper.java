@@ -2,20 +2,19 @@ package ewm.main.compilation.mapper;
 
 import ewm.main.compilation.model.Compilation;
 import ewm.main.dto.CompilationDto;
+import ewm.main.dto.EventShortDto;
 import ewm.main.dto.NewCompilationDto;
-import ewm.main.event.mapper.EventMapper;
 import ewm.main.event.model.Event;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CompilationMapper {
-    public static CompilationDto toDto(Compilation entity) {
+    public static CompilationDto toDto(Compilation entity, List<EventShortDto> eventsDto) {
         return CompilationDto.builder()
                 .id(entity.getId())
                 .title(entity.getTitle())
                 .pinned(entity.getPinned())
-                .events(entity.getEvents().stream().map(EventMapper::toShortDto).collect(Collectors.toSet()))
+                .events(eventsDto)
                 .build();
     }
 
