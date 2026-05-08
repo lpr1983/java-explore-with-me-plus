@@ -2,6 +2,7 @@ package ewm.stat.server.service;
 
 import ewm.stat.dto.HitDto;
 import ewm.stat.dto.StatDto;
+import ewm.stat.server.exception.ValidationException;
 import ewm.stat.server.storage.StatStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,9 @@ public class StatServiceImpl implements StatService {
     @Override
     public List<StatDto> getStats(LocalDateTime start, LocalDateTime end, boolean unique, List<String> uris) {
         log.info("Fetching stats from {} to {} with unique={} and uris={}", start, end, unique, uris);
+        if (start.isAfter(end)) {
+            throw new ValidationException("Дата начала не может быть позже даты конца");
+        }
         return statStorage.getStats(start, end, unique, uris);
     }
 }
