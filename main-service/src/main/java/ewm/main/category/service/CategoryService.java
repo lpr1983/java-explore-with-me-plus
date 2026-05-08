@@ -61,7 +61,7 @@ public class CategoryService {
 
     @Transactional
     public List<CategoryDto> getAll(Integer from, Integer size) {
-        List<Category> categoryList = entityManager.createQuery("SELECT c FROM Category c ORDER BY c.id", Category.class).setFirstResult(from).setMaxResults(size).getResultList();
+        List<Category> categoryList = categoryRepository.findAllWithLimitOffset(from, size);
 
         return categoryList.stream().map(CategoryMapper::toDto).collect(Collectors.toList());
     }
