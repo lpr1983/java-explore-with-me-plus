@@ -1,4 +1,4 @@
-package ewm.main.event.model.search;
+package ewm.main.event.model;
 
 import ewm.main.exception.ValidationException;
 

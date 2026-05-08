@@ -2,8 +2,8 @@ package ewm.main.event.service;
 
 import ewm.main.dto.UpdateEventAdminRequestDto;
 import ewm.main.dto.EventFullDto;
-import ewm.main.event.model.search.AdminEventSearchParam;
-import ewm.main.event.model.search.PageParam;
+import ewm.main.dto.search.AdminEventSearchParam;
+import ewm.main.dto.search.PageParam;
 
 import java.util.List;
 

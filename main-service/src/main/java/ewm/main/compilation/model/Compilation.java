@@ -4,16 +4,18 @@ import ewm.main.event.model.Event;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
 @Entity
-@Data
 @Table(name = "compilations")
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Builder(toBuilder = true)
 public class Compilation {
     @Id

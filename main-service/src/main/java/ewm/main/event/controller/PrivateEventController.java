@@ -7,7 +7,7 @@ import ewm.main.dto.EventShortDto;
 import ewm.main.dto.NewEventDto;
 import ewm.main.dto.ParticipationRequestDto;
 import ewm.main.dto.UpdateEventUserRequestDto;
-import ewm.main.event.model.search.PageParam;
+import ewm.main.dto.search.PageParam;
 import ewm.main.event.service.PrivateEventService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
