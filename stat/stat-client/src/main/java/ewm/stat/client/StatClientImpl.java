@@ -23,7 +23,7 @@ public class StatClientImpl implements StatClient {
     private final String app;
     private final RestClient restClient;
 
-    public StatClientImpl(String app, String baseUrl, int timeoutMs) {
+    public StatClientImpl(String app, String baseUrl, int timeoutMs) { //из конфигурации получает String app, String baseUrl, int timeoutMs
         this.app = app;
 
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();

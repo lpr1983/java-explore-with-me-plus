@@ -8,6 +8,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,4 +28,7 @@ public interface EventRepository extends JpaRepository<Event, Long>,
     Optional<Event> findOneByIdAndState(long id, EventState state);
 
     boolean existsByCategory_Id(long categoryId);
+
+    @Query("SELECT e FROM Event e WHERE distance(e.latitude, e.longitude, :latA, :lonA) < :maxDistance")
+    Page<Event> findEventsWithinDistance(@Param("latA") double latA, @Param("lonA") double lonA, @Param("maxDistance") double maxDistance, Pageable pageable);
 }
