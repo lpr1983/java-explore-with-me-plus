@@ -29,6 +29,6 @@ public interface EventRepository extends JpaRepository<Event, Long>,
 
     boolean existsByCategory_Id(long categoryId);
 
-    @Query("SELECT e FROM Event e WHERE distance(e.latitude, e.longitude, :latA, :lonA) < :maxDistance")
+    @Query("SELECT e FROM Event e WHERE distance(e.lat, e.lon, :latA, :lonA) < :maxDistance")
     Page<Event> findEventsWithinDistance(@Param("latA") double latA, @Param("lonA") double lonA, @Param("maxDistance") double maxDistance, Pageable pageable);
 }
