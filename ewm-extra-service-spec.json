@@ -1,0 +1,506 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Location & Event Management API",
+    "description": "API для управления локациями и поиска событий",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Локальный сервер разработки"
+    }
+  ],
+  "paths": {
+    "/admin/locations": {
+      "post": {
+        "tags": [
+          "Admin Locations"
+        ],
+        "summary": "Создать новую локацию",
+        "operationId": "createLocation",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LocationRequest"
+              },
+              "example": {
+                "name": "Кафе \"Радуга\"",
+                "lat": 55.7517,
+                "lon": 37.629,
+                "radius": 100
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Локация успешно создана",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Невалидные входные данные",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Admin Locations"
+        ],
+        "summary": "Получить список всех локаций с пагинацией",
+        "operationId": "getAllLocations",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Начальный индекс для пагинации",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "Количество элементов на странице",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список локаций",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LocationResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Невалидные параметры пагинации",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/locations/{locationId}": {
+      "get": {
+        "tags": [
+          "Admin Locations"
+        ],
+        "summary": "Получить локацию по ID",
+        "operationId": "getLocationById",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "path",
+            "required": true,
+            "description": "ID локации",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Данные локации",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Локация не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Admin Locations"
+        ],
+        "summary": "Полностью обновить локацию",
+        "operationId": "updateLocation",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "path",
+            "required": true,
+            "description": "ID локации для обновления",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LocationRequest"
+              },
+              "example": {
+                "name": "Кафе \"Радуга\"",
+                "lat": 55.7517,
+                "lon": 37.629,
+                "radius": 100
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Локация успешно обновлена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Невалидные входные данные",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Локация не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admin Locations"
+        ],
+        "summary": "Удалить локацию",
+        "operationId": "deleteLocation",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "path",
+            "required": true,
+            "description": "ID локации для удаления",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Локация успешно удалена"
+          },
+          "404": {
+            "description": "Локация не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/events": {
+      "get": {
+        "tags": [
+          "Admin Events"
+        ],
+        "summary": "Поиск опубликованных событий по локации",
+        "description": "**Два режима поиска:**\n- `?locationId=5` — точный поиск: события, привязанные непосредственно к локации с ID=5\n- `?locationId=5&radius=10000` — географический поиск: события в радиусе 10 км от координат локации с ID=5\n\nВозвращаются только опубликованные события.",
+        "operationId": "searchEvents",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "query",
+            "required": true,
+            "description": "ID локации (обязательный параметр)",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 5
+          },
+          {
+            "name": "radius",
+            "in": "query",
+            "required": false,
+            "description": "Радиус поиска в метрах от координат локации.\n- Если НЕ указан → точный поиск по location_id\n- Если указан → географический поиск событий, попадающих в радиус от координат локации",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "example": 10000
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список опубликованных событий",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventResponse"
+                  }
+                },
+                "example": [
+                  {
+                    "id": 42,
+                    "name": "Спектакль «Гамлет»",
+                    "description": "Премьера нового сезона",
+                    "lat": 55.752,
+                    "lon": 37.631,
+                    "locationId": 5,
+                    "status": "PUBLISHED",
+                    "startDate": "2026-06-15T19:00:00"
+                  },
+                  {
+                    "id": 57,
+                    "name": "Концерт симфонической музыки",
+                    "description": "Произведения Чайковского",
+                    "lat": 55.76,
+                    "lon": 37.62,
+                    "locationId": 8,
+                    "status": "PUBLISHED",
+                    "startDate": "2026-06-20T20:00:00"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "Невалидные параметры",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Локация не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LocationRequest": {
+        "type": "object",
+        "required": [
+          "name",
+          "lat",
+          "lon",
+          "radius"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Название локации",
+            "minLength": 1,
+            "example": "Кафе \"Радуга\""
+          },
+          "lat": {
+            "type": "number",
+            "format": "double",
+            "description": "Широта (latitude)",
+            "minimum": -90,
+            "maximum": 90,
+            "example": 55.7517
+          },
+          "lon": {
+            "type": "number",
+            "format": "double",
+            "description": "Долгота (longitude)",
+            "minimum": -180,
+            "maximum": 180,
+            "example": 37.629
+          },
+          "radius": {
+            "type": "number",
+            "format": "double",
+            "description": "Радиус в метрах",
+            "exclusiveMinimum": 0,
+            "example": 100
+          }
+        }
+      },
+      "LocationResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Уникальный идентификатор локации",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "Название локации",
+            "example": "Кафе \"Радуга\""
+          },
+          "lat": {
+            "type": "number",
+            "format": "double",
+            "description": "Широта",
+            "example": 55.7517
+          },
+          "lon": {
+            "type": "number",
+            "format": "double",
+            "description": "Долгота",
+            "example": 37.629
+          },
+          "radius": {
+            "type": "number",
+            "format": "double",
+            "description": "Радиус в метрах",
+            "example": 100
+          }
+        }
+      },
+      "EventResponse": {
+        "type": "object",
+        "description": "Событие (только опубликованные)",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Уникальный идентификатор события",
+            "example": 42
+          },
+          "name": {
+            "type": "string",
+            "description": "Название события",
+            "example": "Спектакль «Гамлет»"
+          },
+          "description": {
+            "type": "string",
+            "description": "Описание события",
+            "example": "Премьера нового сезона"
+          },
+          "lat": {
+            "type": "number",
+            "format": "double",
+            "description": "Широта места проведения",
+            "example": 55.752
+          },
+          "lon": {
+            "type": "number",
+            "format": "double",
+            "description": "Долгота места проведения",
+            "example": 37.631
+          },
+          "locationId": {
+            "type": "integer",
+            "format": "int64",
+            "description": "ID локации, к которой привязано событие",
+            "example": 5
+          },
+          "status": {
+            "type": "string",
+            "description": "Статус события",
+            "enum": [
+              "PUBLISHED"
+            ],
+            "example": "PUBLISHED"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Дата и время начала события",
+            "example": "2026-06-15T19:00:00"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Сообщение об ошибке",
+            "example": "Location not found"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Время возникновения ошибки"
+          },
+          "status": {
+            "type": "integer",
+            "description": "HTTP статус",
+            "example": 404
+          }
+        }
+      }
+    }
+  }
+}
