@@ -11,6 +11,8 @@ import ewm.main.event.repository.EventRepository;
 import ewm.main.event.repository.EventSpecifications;
 import ewm.main.exception.NotFoundException;
 import ewm.main.exception.ValidationException;
+import ewm.main.place.Place;
+import ewm.main.place.repository.PlaceRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -29,6 +31,7 @@ import java.util.List;
 public class PublicEventServiceImpl implements PublicEventService {
     private final EventRepository eventRepository;
     private final EventDtoAssembler eventDtoAssembler;
+    private final PlaceRepository placeRepository;
 
     @Override
     public List<EventShortDto> getEvents(PublicEventSearchParam searchParam, PageParam pageParam) {
@@ -56,6 +59,14 @@ public class PublicEventServiceImpl implements PublicEventService {
         specification = specification
                 .and(EventSpecifications.paid(searchParam.getPaid()))
                 .and(EventSpecifications.categoryIdIn(searchParam.getCategories()));
+
+        Place place = null;
+        Long placeId = searchParam.getPlaceId();
+        if (placeId != null) {
+            place = placeRepository.findById(placeId)
+                    .orElseThrow(() -> new NotFoundException("Не найдено место с id:" + placeId));
+            specification = specification.and(EventSpecifications.inPlace(place));
+        }
 
         EventSort eventSort = EventSort.parse(searchParam.getSort());
 

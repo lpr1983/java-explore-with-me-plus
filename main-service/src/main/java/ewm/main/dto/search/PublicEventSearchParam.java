@@ -1,5 +1,6 @@
 package ewm.main.dto.search;
 
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,5 +28,9 @@ public class PublicEventSearchParam {
     private LocalDateTime rangeEnd;
 
     private Boolean onlyAvailable = false;
+
     private String sort = "EVENT_DATE";
+
+    @Positive
+    private Long placeId;
 }
