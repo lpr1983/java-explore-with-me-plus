@@ -15,10 +15,10 @@ import java.util.Optional;
 public interface EventRepository extends JpaRepository<Event, Long>,
         JpaSpecificationExecutor<Event> {
 
-    @EntityGraph(attributePaths = {"initiator", "category"})
+    @EntityGraph(attributePaths = {"initiator", "category", "place"})
     Page<Event> findAll(Specification<Event> specification, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"initiator", "category"})
+    @EntityGraph(attributePaths = {"initiator", "category", "place"})
     List<Event> findByInitiator_IdOrderByEventDateAsc(long userId, Pageable pageable);
 
     Optional<Event> findOneByInitiator_IdAndId(long userId, long eventId);

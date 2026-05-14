@@ -11,6 +11,8 @@ import ewm.main.event.model.EventState;
 import ewm.main.dto.search.PageParam;
 import ewm.main.event.repository.EventRepository;
 import ewm.main.exception.ConflictException;
+import ewm.main.place.Place;
+import ewm.main.place.repository.PlaceRepository;
 import ewm.main.request.mapper.ParticipationRequestMapper;
 import ewm.main.request.model.ParticipationRequest;
 import ewm.main.request.model.RequestStatus;
@@ -45,6 +47,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     private final CategoryRepository categoryRepository;
     private final ParticipationRequestRepository participationRequestRepository;
     private final EventDtoAssembler eventDtoAssembler;
+    private final PlaceRepository placeRepository;
 
     @Override
     public EventFullDto getEventOfUserById(long userId, long eventId) {
@@ -95,9 +98,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
         Event event = findEventByUserIdAndEventIdOrThrow(userId, eventId);
 
-        if (event.getState() != EventState.PENDING && event.getState() != EventState.CANCELED) {
-            throw new ConflictException("Можно изменять события только в статусах PENDING и CANCELED");
-        }
+        checkEventIsEditable(event);
 
         validateEventDate(event.getEventDate());
 
@@ -158,6 +159,31 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         }
 
         return rejectRequests(event, distinctIds);
+    }
+
+    @Override
+    public EventFullDto setPlace(long userId, long eventId, long placeId) {
+        Event event = findEventByUserIdAndEventIdOrThrow(userId, eventId);
+
+        checkEventIsEditable(event);
+
+        Place place = placeRepository.findById(placeId)
+                .orElseThrow(() -> new NotFoundException("Не найдено место: " + placeId));
+
+        event.setPlace(place);
+
+        return eventDtoAssembler.toFullDto(eventRepository.save(event));
+    }
+
+    @Override
+    public void removePlace(long userId, long eventId) {
+        Event event = findEventByUserIdAndEventIdOrThrow(userId, eventId);
+
+        checkEventIsEditable(event);
+
+        event.setPlace(null);
+
+        eventRepository.save(event);
     }
 
     private EventRequestStatusUpdateResultDto confirmRequests(Event event, List<Long> requestIds) {
@@ -257,6 +283,12 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     private void validateEventDate(LocalDateTime eventDate) {
         if (eventDate != null && eventDate.isBefore(LocalDateTime.now().plusHours(2))) {
             throw new ConflictException("Дата события должна быть не ранее чем через 2 часа от текущего момента");
+        }
+    }
+
+    private void checkEventIsEditable(Event event) {
+        if (event.getState() != EventState.PENDING && event.getState() != EventState.CANCELED) {
+            throw new ConflictException("Можно изменять события только в статусах PENDING и CANCELED");
         }
     }
 

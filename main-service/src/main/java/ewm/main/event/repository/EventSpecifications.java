@@ -2,6 +2,7 @@ package ewm.main.event.repository;
 
 import ewm.main.event.model.Event;
 import ewm.main.event.model.EventState;
+import ewm.main.exception.ValidationException;
 import ewm.main.place.Place;
 import jakarta.persistence.criteria.Expression;
 import org.springframework.data.jpa.domain.Specification;
@@ -91,8 +92,17 @@ public final class EventSpecifications {
                 cb.lessThanOrEqualTo(root.get("eventDate"), end);
     }
 
-    public static Specification<Event> inPlace(Place place) {
+    public static Specification<Event> placeEquals(Place place) {
         if (place == null) {
+            return null;
+        }
+
+        return (root, query, cb) ->
+                cb.equal(root.get("place"), place);
+    }
+
+    public static Specification<Event> inRadius(Place place, Double radius) {
+        if (place == null || radius == null) {
             return null;
         }
 
@@ -106,8 +116,24 @@ public final class EventSpecifications {
                     cb.literal(place.getLon())
             );
 
-            return cb.lessThanOrEqualTo(distance, place.getRadius());
+            return cb.lessThanOrEqualTo(distance, radius);
         };
+    }
+
+    public static Specification<Event> placeSearch(Place place, Double radius) {
+        if (radius != null && place == null) {
+            throw new ValidationException("Нельзя указывать радиус без указания места");
+        }
+
+        if (place == null) {
+            return null;
+        }
+
+        if (radius != null) {
+            return inRadius(place, radius);
+        }
+
+        return placeEquals(place);
     }
 
 }

@@ -60,13 +60,15 @@ public class PublicEventServiceImpl implements PublicEventService {
                 .and(EventSpecifications.paid(searchParam.getPaid()))
                 .and(EventSpecifications.categoryIdIn(searchParam.getCategories()));
 
-        Place place = null;
         Long placeId = searchParam.getPlaceId();
+        Place place = null;
+
         if (placeId != null) {
             place = placeRepository.findById(placeId)
-                    .orElseThrow(() -> new NotFoundException("Не найдено место с id:" + placeId));
-            specification = specification.and(EventSpecifications.inPlace(place));
+                    .orElseThrow(() -> new NotFoundException("Не найдено место с id: " + placeId));
         }
+
+        specification = specification.and(EventSpecifications.placeSearch(place, searchParam.getRadius()));
 
         EventSort eventSort = EventSort.parse(searchParam.getSort());
 

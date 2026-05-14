@@ -11,4 +11,8 @@ public interface AdminEventService {
     List<EventFullDto> searchEvents(AdminEventSearchParam searchParam, PageParam pageParam);
 
     EventFullDto updateEvent(Long eventId, UpdateEventAdminRequestDto request);
+
+    EventFullDto setPlace(long eventId, long placeId);
+
+    void removePlace(long eventId);
 }

@@ -1,6 +1,7 @@
 package ewm.main.dto.search;
 
 import ewm.main.event.model.EventState;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,4 +26,10 @@ public class AdminEventSearchParam {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime rangeEnd;
+
+    @Positive
+    private Long placeId;
+
+    @Positive
+    private Double radius;
 }

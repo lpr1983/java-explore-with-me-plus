@@ -14,6 +14,8 @@ import ewm.main.event.repository.EventRepository;
 import ewm.main.event.repository.EventSpecifications;
 import ewm.main.exception.ConflictException;
 import ewm.main.exception.NotFoundException;
+import ewm.main.place.Place;
+import ewm.main.place.repository.PlaceRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -32,6 +34,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
     private final EventDtoAssembler eventDtoAssembler;
+    private final PlaceRepository placeRepository;
 
     @Override
     public List<EventFullDto> searchEvents(AdminEventSearchParam searchParam, PageParam pageParam) {
@@ -47,6 +50,16 @@ public class AdminEventServiceImpl implements AdminEventService {
                     .and(EventSpecifications.initiatorIdIn(searchParam.getUsers()))
                     .and(EventSpecifications.categoryIdIn(searchParam.getCategories()))
                     .and(EventSpecifications.stateIn(searchParam.getStates()));
+
+            Long placeId = searchParam.getPlaceId();
+            Place place = null;
+
+            if (placeId != null) {
+                place = placeRepository.findById(placeId)
+                        .orElseThrow(() -> new NotFoundException("Не найдено место с id: " + placeId));
+            }
+
+            spec = spec.and(EventSpecifications.placeSearch(place, searchParam.getRadius()));
         }
 
         List<Event> events = eventRepository.findAll(spec, pageable).getContent();
@@ -60,9 +73,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     public EventFullDto updateEvent(Long eventId, UpdateEventAdminRequestDto request) {
         log.info("Обновление события с id: {}, запрос: {}", eventId, request);
 
-        Event event = eventRepository.findById(eventId).orElseThrow(
-                () -> new NotFoundException("Событие с id " + eventId + " не найдено.")
-        );
+        Event event = findEventByOrThrow(eventId);
 
         Long newCategoryId = request.getCategory();
         Category newCategory = null;
@@ -109,4 +120,31 @@ public class AdminEventServiceImpl implements AdminEventService {
 
         return eventDtoAssembler.toFullDto(updatedEvent);
     }
+
+    @Override
+    public EventFullDto setPlace(long eventId, long placeId) {
+        Event event = findEventByOrThrow(eventId);
+
+        Place place = placeRepository.findById(placeId)
+                .orElseThrow(() -> new NotFoundException("Не найдено место: " + placeId));
+
+        event.setPlace(place);
+
+        return eventDtoAssembler.toFullDto(eventRepository.save(event));
+    }
+
+    @Override
+    public void removePlace(long eventId) {
+        Event event = findEventByOrThrow(eventId);
+
+        event.setPlace(null);
+
+        eventRepository.save(event);
+    }
+
+    private Event findEventByOrThrow(long eventId) {
+        return eventRepository.findById(eventId).orElseThrow(
+                () -> new NotFoundException("Событие с id " + eventId + " не найдено."));
+    }
+
 }

@@ -12,11 +12,13 @@ import ewm.main.event.service.PrivateEventService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -66,6 +68,20 @@ public class PrivateEventController {
                                                         @PathVariable long eventId,
                                                         @Valid @RequestBody EventRequestStatusUpdateRequestDto dto) {
         return privateEventService.setRequestsStatus(userId, eventId, dto);
+    }
+
+    @PutMapping("/{userId}/events/{eventId}/place/{placeId}")
+    public EventFullDto setPlace(@PathVariable long userId,
+                                 @PathVariable long eventId,
+                                 @PathVariable long placeId) {
+        return privateEventService.setPlace(userId, eventId, placeId);
+    }
+
+    @DeleteMapping("/{userId}/events/{eventId}/place")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removePlace(@PathVariable long userId,
+                            @PathVariable long eventId) {
+        privateEventService.removePlace(userId, eventId);
     }
 
 }

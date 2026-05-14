@@ -8,6 +8,7 @@ import ewm.main.dto.NewEventDto;
 import ewm.main.dto.UpdateEventAdminRequestDto;
 import ewm.main.dto.UpdateEventUserRequestDto;
 import ewm.main.event.model.Event;
+import ewm.main.place.mapper.PlaceMapper;
 import ewm.main.user.User;
 import ewm.main.user.UserMapper;
 
@@ -48,6 +49,7 @@ public class EventMapper {
         dto.setRequestModeration(event.isRequestModeration());
         dto.setState(event.getState().name()); // обязательное поле
         dto.setTitle(event.getTitle());
+        dto.setPlace(PlaceMapper.toShortDto(event.getPlace()));
 
         return dto;
     }

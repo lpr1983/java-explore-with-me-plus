@@ -33,4 +33,7 @@ public class PublicEventSearchParam {
 
     @Positive
     private Long placeId;
+
+    @Positive
+    private Double radius;
 }

@@ -28,7 +28,6 @@ public class PlaceServiceImpl implements PlaceService {
         existing.setName(place.getName());
         existing.setLat(place.getLat());
         existing.setLon(place.getLon());
-        existing.setRadius(place.getRadius());
 
         return placeRepository.save(existing);
     }
