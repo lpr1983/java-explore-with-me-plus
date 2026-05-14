@@ -1,6 +1,5 @@
 package ewm.main.place.controller;
 
-import ewm.main.dto.search.PageParam;
 import ewm.main.place.Place;
 import ewm.main.place.service.PlaceService;
 import jakarta.validation.Valid;
@@ -8,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/admin/places")
@@ -33,15 +31,5 @@ public class AdminPlaceController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable long placeId) {
         placeService.delete(placeId);
-    }
-
-    @GetMapping
-    public List<Place> getAll(@Valid @ModelAttribute PageParam pageParam) {
-        return placeService.getAll(pageParam);
-    }
-
-    @GetMapping("/{placeId}")
-    public Place getById(@PathVariable long placeId) {
-        return placeService.getById(placeId);
     }
 }
