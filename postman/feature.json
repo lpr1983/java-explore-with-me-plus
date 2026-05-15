@@ -5157,16 +5157,6 @@
                               "            pm.collectionVariables.set(\"allEvents\", JSON.stringify([event1, event2, event3, event4, event5]));\r",
                               "            \r",
                               "            for (const evt of [event1, event2, event3, event4, event5]) {\r",
-                              "                const putRequest = {\r",
-                              "                    url: `${baseUrl}/admin/events/${evt.id}/place/${createdPlace.id}`,\r",
-                              "                    method: 'PUT',\r",
-                              "                    header: { 'Content-Type': 'application/json' }\r",
-                              "                };\r",
-                              "                \r",
-                              "                pm.sendRequest(putRequest, (err) => {\r",
-                              "                    if (err) console.error(`Ошибка привязки события ${evt.id}:`, err);\r",
-                              "                });\r",
-                              "                \r",
                               "                const patchRequest = {\r",
                               "                    url: `${baseUrl}/admin/events/${evt.id}`,\r",
                               "                    method: 'PATCH',\r",
@@ -5255,7 +5245,7 @@
                           }
                         },
                         "url": {
-                          "raw": "{{baseUrl}}/events?placeId={{placeId}}&radius=100&size=1000000000&size=1000",
+                          "raw": "{{baseUrl}}/events?placeId={{placeId}}&radius=100&size=1000000000",
                           "host": [
                             "{{baseUrl}}"
                           ],
@@ -5274,10 +5264,6 @@
                             {
                               "key": "size",
                               "value": "1000000000"
-                            },
-                            {
-                              "key": "size",
-                              "value": "1000"
                             }
                           ]
                         }
