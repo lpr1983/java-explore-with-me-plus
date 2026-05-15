@@ -163,6 +163,8 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
     @Override
     public EventFullDto setPlace(long userId, long eventId, long placeId) {
+        log.info("Привязка события с id: {} к месту: {}", eventId, placeId);
+
         Event event = findEventByUserIdAndEventIdOrThrow(userId, eventId);
 
         checkEventIsEditable(event);
@@ -177,6 +179,8 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
     @Override
     public void removePlace(long userId, long eventId) {
+        log.info("Отвязка места от события с id: {}", eventId);
+
         Event event = findEventByUserIdAndEventIdOrThrow(userId, eventId);
 
         checkEventIsEditable(event);

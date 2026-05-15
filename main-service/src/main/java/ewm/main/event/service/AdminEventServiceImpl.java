@@ -123,6 +123,8 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     @Override
     public EventFullDto setPlace(long eventId, long placeId) {
+        log.info("Привязка события с id: {} к месту: {}", eventId, placeId);
+
         Event event = findEventByOrThrow(eventId);
 
         Place place = placeRepository.findById(placeId)
@@ -135,6 +137,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     @Override
     public void removePlace(long eventId) {
+        log.info("Отвязка места от события с id: {}", eventId);
         Event event = findEventByOrThrow(eventId);
 
         event.setPlace(null);

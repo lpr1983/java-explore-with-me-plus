@@ -50,11 +50,11 @@
     },
     {
       "name": "Public: Места",
-      "description": "[NEW FEATURE: Places] Публичное чтение справочника мест"
+      "description": "[NEW FEATURE: Locations] Публичное чтение справочника мест"
     },
     {
       "name": "Admin: Места",
-      "description": "[NEW FEATURE: Places] Управление справочником мест"
+      "description": "[NEW FEATURE: Locations] Управление справочником мест"
     }
   ],
   "paths": {
@@ -423,7 +423,7 @@
     },
     "/admin/events": {
       "get": {
-        "description": "Эндпоинт возвращает полную информацию обо всех событиях подходящих под переданные условия\n\nВ случае, если по заданным фильтрам не найдено ни одного события, возвращает пустой список\n\n[NEW FEATURE: Places] Поддерживается фильтрация по месту: placeId — точное совпадение с привязанным местом события; placeId + radius — поиск событий в указанном радиусе от координат места.",
+        "description": "Эндпоинт возвращает полную информацию обо всех событиях подходящих под переданные условия\n\nВ случае, если по заданным фильтрам не найдено ни одного события, возвращает пустой список\n\n[NEW FEATURE: Locations] Поддерживается фильтрация по месту: placeId — точное совпадение с привязанным местом события; placeId + radius — поиск событий в указанном радиусе от координат места.",
         "operationId": "getEvents_2",
         "parameters": [
           {
@@ -506,7 +506,7 @@
             }
           },
           {
-            "description": "[NEW FEATURE: Places] Идентификатор места для фильтрации событий. Без radius выполняется точный поиск по привязанному месту.",
+            "description": "[NEW FEATURE: Locations] Идентификатор места для фильтрации событий. Без radius выполняется точный поиск по привязанному месту.",
             "in": "query",
             "name": "placeId",
             "required": false,
@@ -517,7 +517,7 @@
             }
           },
           {
-            "description": "[NEW FEATURE: Places] Радиус поиска от координат указанного placeId. Если radius передан без placeId, запрос считается некорректным.",
+            "description": "[NEW FEATURE: Locations] Радиус поиска от координат указанного placeId. Если radius передан без placeId, запрос считается некорректным.",
             "in": "query",
             "name": "radius",
             "required": false,
@@ -1101,7 +1101,7 @@
     },
     "/events": {
       "get": {
-        "description": "Обратите внимание: \n- это публичный эндпоинт, соответственно в выдаче должны быть только опубликованные события\n- текстовый поиск (по аннотации и подробному описанию) должен быть без учета регистра букв\n- если в запросе не указан диапазон дат [rangeStart-rangeEnd], то нужно выгружать события, которые произойдут позже текущей даты и времени\n- информация о каждом событии должна включать в себя количество просмотров и количество уже одобренных заявок на участие\n- информацию о том, что по этому эндпоинту был осуществлен и обработан запрос, нужно сохранить в сервисе статистики\n\nВ случае, если по заданным фильтрам не найдено ни одного события, возвращает пустой список\n\n[NEW FEATURE: Places] Поддерживается фильтрация по месту: placeId — точное совпадение с привязанным местом события; placeId + radius — поиск событий в указанном радиусе от координат места.",
+        "description": "Обратите внимание: \n- это публичный эндпоинт, соответственно в выдаче должны быть только опубликованные события\n- текстовый поиск (по аннотации и подробному описанию) должен быть без учета регистра букв\n- если в запросе не указан диапазон дат [rangeStart-rangeEnd], то нужно выгружать события, которые произойдут позже текущей даты и времени\n- информация о каждом событии должна включать в себя количество просмотров и количество уже одобренных заявок на участие\n- информацию о том, что по этому эндпоинту был осуществлен и обработан запрос, нужно сохранить в сервисе статистики\n\nВ случае, если по заданным фильтрам не найдено ни одного события, возвращает пустой список\n\n[NEW FEATURE: Locations] Поддерживается фильтрация по месту: placeId — точное совпадение с привязанным местом события; placeId + radius — поиск событий в указанном радиусе от координат места.",
         "operationId": "getEvents_1",
         "parameters": [
           {
@@ -1202,7 +1202,7 @@
             }
           },
           {
-            "description": "[NEW FEATURE: Places] Идентификатор места для фильтрации событий. Без radius выполняется точный поиск по привязанному месту.",
+            "description": "[NEW FEATURE: Locations] Идентификатор места для фильтрации событий. Без radius выполняется точный поиск по привязанному месту.",
             "in": "query",
             "name": "placeId",
             "required": false,
@@ -1213,7 +1213,7 @@
             }
           },
           {
-            "description": "[NEW FEATURE: Places] Радиус поиска от координат указанного placeId. Если radius передан без placeId, запрос считается некорректным.",
+            "description": "[NEW FEATURE: Locations] Радиус поиска от координат указанного placeId. Если radius передан без placeId, запрос считается некорректным.",
             "in": "query",
             "name": "radius",
             "required": false,
@@ -2040,7 +2040,7 @@
     },
     "/places": {
       "get": {
-        "description": "[NEW FEATURE: Places] Возвращает список справочных мест. Используется, чтобы выбрать placeId для поиска событий.",
+        "description": "[NEW FEATURE: Locations] Возвращает список справочных мест. Используется, чтобы выбрать placeId для поиска событий.",
         "operationId": "getPlaces",
         "parameters": [
           {
@@ -2092,7 +2092,7 @@
             "description": "Запрос составлен некорректно"
           }
         },
-        "summary": "[NEW FEATURE: Places] Получение списка мест",
+        "summary": "[NEW FEATURE: Locations] Получение списка мест",
         "tags": [
           "Public: Места"
         ]
@@ -2100,7 +2100,7 @@
     },
     "/places/{placeId}": {
       "get": {
-        "description": "[NEW FEATURE: Places] Возвращает справочное место по идентификатору.",
+        "description": "[NEW FEATURE: Locations] Возвращает справочное место по идентификатору.",
         "operationId": "getPlaceById",
         "parameters": [
           {
@@ -2146,7 +2146,7 @@
             "description": "Место не найдено"
           }
         },
-        "summary": "[NEW FEATURE: Places] Получение места по идентификатору",
+        "summary": "[NEW FEATURE: Locations] Получение места по идентификатору",
         "tags": [
           "Public: Места"
         ]
@@ -2154,7 +2154,7 @@
     },
     "/admin/places": {
       "post": {
-        "description": "[NEW FEATURE: Places] Создаёт новое справочное место. Все поля, кроме id, обязательны.",
+        "description": "[NEW FEATURE: Locations] Создаёт новое справочное место. Все поля, кроме id, обязательны.",
         "operationId": "addPlace",
         "requestBody": {
           "content": {
@@ -2189,7 +2189,7 @@
             "description": "Запрос составлен некорректно"
           }
         },
-        "summary": "[NEW FEATURE: Places] Добавление нового места",
+        "summary": "[NEW FEATURE: Locations] Добавление нового места",
         "tags": [
           "Admin: Места"
         ]
@@ -2197,7 +2197,7 @@
     },
     "/admin/places/{placeId}": {
       "put": {
-        "description": "[NEW FEATURE: Places] Полная замена справочного места.",
+        "description": "[NEW FEATURE: Locations] Полная замена справочного места.",
         "operationId": "updatePlace",
         "parameters": [
           {
@@ -2254,13 +2254,13 @@
             "description": "Место не найдено"
           }
         },
-        "summary": "[NEW FEATURE: Places] Обновление места",
+        "summary": "[NEW FEATURE: Locations] Обновление места",
         "tags": [
           "Admin: Места"
         ]
       },
       "delete": {
-        "description": "[NEW FEATURE: Places] Удаляет справочное место. При удалении связь с событиями очищается.",
+        "description": "[NEW FEATURE: Locations] Удаляет справочное место. При удалении связь с событиями очищается.",
         "operationId": "deletePlace",
         "parameters": [
           {
@@ -2299,7 +2299,7 @@
             "description": "Место не найдено"
           }
         },
-        "summary": "[NEW FEATURE: Places] Удаление места",
+        "summary": "[NEW FEATURE: Locations] Удаление места",
         "tags": [
           "Admin: Места"
         ]
@@ -2307,7 +2307,7 @@
     },
     "/users/{userId}/events/{eventId}/place/{placeId}": {
       "put": {
-        "description": "[NEW FEATURE: Places] Привязывает справочное место к событию текущего пользователя. Изменять можно только события в статусах PENDING и CANCELED.",
+        "description": "[NEW FEATURE: Locations] Привязывает справочное место к событию текущего пользователя. Изменять можно только события в статусах PENDING и CANCELED.",
         "operationId": "setEventPlace",
         "parameters": [
           {
@@ -2383,7 +2383,7 @@
             "description": "Событие не удовлетворяет правилам редактирования"
           }
         },
-        "summary": "[NEW FEATURE: Places] Привязка места к событию текущего пользователя",
+        "summary": "[NEW FEATURE: Locations] Привязка места к событию текущего пользователя",
         "tags": [
           "Private: События"
         ]
@@ -2391,7 +2391,7 @@
     },
     "/users/{userId}/events/{eventId}/place": {
       "delete": {
-        "description": "[NEW FEATURE: Places] Отвязывает справочное место от события текущего пользователя. Изменять можно только события в статусах PENDING и CANCELED.",
+        "description": "[NEW FEATURE: Locations] Отвязывает справочное место от события текущего пользователя. Изменять можно только события в статусах PENDING и CANCELED.",
         "operationId": "removeEventPlace",
         "parameters": [
           {
@@ -2450,7 +2450,7 @@
             "description": "Событие не удовлетворяет правилам редактирования"
           }
         },
-        "summary": "[NEW FEATURE: Places] Отвязка места от события текущего пользователя",
+        "summary": "[NEW FEATURE: Locations] Отвязка места от события текущего пользователя",
         "tags": [
           "Private: События"
         ]
@@ -2458,7 +2458,7 @@
     },
     "/admin/events/{eventId}/place/{placeId}": {
       "put": {
-        "description": "[NEW FEATURE: Places] Администратор привязывает справочное место к событию.",
+        "description": "[NEW FEATURE: Locations] Администратор привязывает справочное место к событию.",
         "operationId": "setEventPlaceByAdmin",
         "parameters": [
           {
@@ -2514,7 +2514,7 @@
             "description": "Событие или место не найдено"
           }
         },
-        "summary": "[NEW FEATURE: Places] Административная привязка места к событию",
+        "summary": "[NEW FEATURE: Locations] Административная привязка места к событию",
         "tags": [
           "Admin: События"
         ]
@@ -2522,7 +2522,7 @@
     },
     "/admin/events/{eventId}/place": {
       "delete": {
-        "description": "[NEW FEATURE: Places] Администратор отвязывает справочное место от события.",
+        "description": "[NEW FEATURE: Locations] Администратор отвязывает справочное место от события.",
         "operationId": "removeEventPlaceByAdmin",
         "parameters": [
           {
@@ -2561,7 +2561,7 @@
             "description": "Событие не найдено"
           }
         },
-        "summary": "[NEW FEATURE: Places] Административная отвязка места от события",
+        "summary": "[NEW FEATURE: Locations] Административная отвязка места от события",
         "tags": [
           "Admin: События"
         ]
@@ -3449,7 +3449,7 @@
         "description": "Пользователь (краткая информация)"
       },
       "Place": {
-        "description": "[NEW FEATURE: Places] Справочное место с координатами",
+        "description": "[NEW FEATURE: Locations] Справочное место с координатами",
         "required": [
           "name",
           "lat",
@@ -3489,7 +3489,7 @@
         }
       },
       "ShortPlaceDto": {
-        "description": "[NEW FEATURE: Places] Краткое представление места для отображения в полной информации о событии",
+        "description": "[NEW FEATURE: Locations] Краткое представление места для отображения в полной информации о событии",
         "type": "object",
         "properties": {
           "id": {

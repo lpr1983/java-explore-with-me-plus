@@ -1,10 +1,9 @@
 {
   "info": {
-    "_postman_id": "da03d8bd-ccb6-4254-bc19-0a19e9c3d92d",
+    "_postman_id": "24fe91d6-e7b4-4ca7-866b-5240bf01fd70",
     "name": "Test Explore With Me - Main service Feature",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "13123967",
-    "_collection_link": "https://go.postman.co/collection/13123967-da03d8bd-ccb6-4254-bc19-0a19e9c3d92d?source=collection_link"
+    "_exporter_id": "4442271"
   },
   "item": [
     {
@@ -5134,7 +5133,7 @@
                               "            \r",
                               "            const event3Gen = {\r",
                               "                ...rnd.getEvent(category.id),\r",
-                              "                \"location\": { \"lat\": 70.8, \"lon\": 70.8 }\r",
+                              "                \"location\": { \"lat\": 75, \"lon\": 75 }\r",
                               "            };\r",
                               "            const event3 = await api.addEvent(user.id, event3Gen);\r",
                               "            \r",
@@ -5174,7 +5173,7 @@
                               "                    header: { 'Content-Type': 'application/json' },\r",
                               "                    body: {\r",
                               "                        mode: 'raw',\r",
-                              "                        raw: JSON.stringify({ ...evt, stateAction: \"PUBLISH_EVENT\" })\r",
+                              "                        raw: JSON.stringify({stateAction: \"PUBLISH_EVENT\" })\r",
                               "                    }\r",
                               "                };\r",
                               "                \r",
@@ -5256,7 +5255,7 @@
                           }
                         },
                         "url": {
-                          "raw": "{{baseUrl}}/events?placeId={{placeId}}&radius=100&size=1000000000",
+                          "raw": "{{baseUrl}}/events?placeId={{placeId}}&radius=100&size=1000000000&size=1000",
                           "host": [
                             "{{baseUrl}}"
                           ],
@@ -5275,6 +5274,10 @@
                             {
                               "key": "size",
                               "value": "1000000000"
+                            },
+                            {
+                              "key": "size",
+                              "value": "1000"
                             }
                           ]
                         }

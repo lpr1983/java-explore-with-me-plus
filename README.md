@@ -42,11 +42,11 @@ docker-compose up
 - `ewm-service` — порт 8080 (основной сервис)
 - `ewm-db` (PostgreSQL - БД основного сервиса)
 
-## Places Feature (Этап 3)
+## Locations Feature (Этап 3)
 
 ## Общее описание
 
-Добавлена новая функциональность `Places`, позволяющая:
+Добавлена новая функциональность `Locations`, позволяющая:
 
 - хранить справочник мест;
 - привязывать место к событию;
@@ -56,6 +56,8 @@ docker-compose up
 ---
 
 ## Справочник мест Place
+
+Сущность называется Place, т.к. класс Location уже существует.
 
 ### Поля
 
@@ -183,6 +185,7 @@ DELETE /admin/events/{eventId}/place
 
 ```http
 GET /events?placeId=1
+GET /admin/events?placeId=1
 ```
 
 Выполняется точное сравнение:
@@ -195,6 +198,7 @@ event.place = place
 
 ```http
 GET /events?placeId=1&radius=2
+GET /admin/events?placeId=1&radius=2
 ```
 
 Выполняется поиск событий в радиусе от координат места.
@@ -248,5 +252,5 @@ place
 Все новые элементы помечены тегом:
 
 ```text
-[NEW FEATURE: Places]
+[NEW FEATURE: Locations]
 ```
