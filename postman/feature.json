@@ -11,7 +11,7 @@
       "name": "Locations",
       "item": [
         {
-          "name": "Admin",
+          "name": "Base",
           "item": [
             {
               "name": "Validate",
@@ -122,7 +122,7 @@
                               "    name: `Test_${Date.now()}`,\r",
                               "    lat: -5000,     \r",
                               "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
-                              "    radius: Math.floor(Math.random() * 1000) + 10\r",
+                              "    // radius: Math.floor(Math.random() * 1000) + 10\r",
                               "};\r",
                               " \r",
                               " \r",
@@ -217,7 +217,7 @@
                               "    name: `Test_${Date.now()}`,\r",
                               "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
                               "    lon: -5000,  \r",
-                              "    radius: Math.floor(Math.random() * 1000) + 10\r",
+                              "    // radius: Math.floor(Math.random() * 1000) + 10\r",
                               "};\r",
                               " \r",
                               " \r",
@@ -312,7 +312,7 @@
                               "    name: `Test_${Date.now()}`,\r",
                               "    lat: -90,     \r",
                               "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
-                              "    radius: Math.floor(Math.random() * 1000) + 10\r",
+                              "    // radius: Math.floor(Math.random() * 1000) + 10\r",
                               "};\r",
                               " \r",
                               " \r",
@@ -407,7 +407,7 @@
                               "    name: `Test_${Date.now()}`,\r",
                               "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
                               "    lon: -180,  \r",
-                              "    radius: Math.floor(Math.random() * 1000) + 10\r",
+                              "    // radius: Math.floor(Math.random() * 1000) + 10\r",
                               "};\r",
                               " \r",
                               " \r",
@@ -491,196 +491,6 @@
                       "response": []
                     },
                     {
-                      "name": "Добавлние Place с негативным Радиусом",
-                      "event": [
-                        {
-                          "listen": "prerequest",
-                          "script": {
-                            "exec": [
-                              "const main = async () => {\r",
-                              "const place = {\r",
-                              "    name: `Test_${Date.now()}`,\r",
-                              "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
-                              "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
-                              "    radius: -500\r",
-                              "};\r",
-                              " \r",
-                              " \r",
-                              "\r",
-                              "    pm.request.body.update({\r",
-                              "        mode: 'raw',\r",
-                              "        raw: JSON.stringify(place),\r",
-                              "        options: { raw: { language: 'json' } }\r",
-                              "    });\r",
-                              "};\r",
-                              "\r",
-                              "const interval = setInterval(() => {}, 1000);\r",
-                              "\r",
-                              "setTimeout(async () => \r",
-                              "    {\r",
-                              "        try {\r",
-                              "            await main();\r",
-                              "        } catch (e) {\r",
-                              "            console.error(e);\r",
-                              "        } finally {\r",
-                              "            clearInterval(interval);\r",
-                              "        }\r",
-                              "    },  \r",
-                              "    100 \r",
-                              ");"
-                            ],
-                            "type": "text/javascript",
-                            "packages": {},
-                            "requests": {}
-                          }
-                        },
-                        {
-                          "listen": "test",
-                          "script": {
-                            "exec": [
-                              "pm.test(\"Ответ должен содержать код статуса 400\", function () {\r",
-                              "    pm.response.to.have.status(400);\r",
-                              "    pm.response.to.be.withBody;\r",
-                              "    pm.response.to.be.json;\r",
-                              "});\r",
-                              ""
-                            ],
-                            "type": "text/javascript",
-                            "packages": {},
-                            "requests": {}
-                          }
-                        }
-                      ],
-                      "request": {
-                        "method": "POST",
-                        "header": [
-                          {
-                            "key": "Content-Type",
-                            "value": "application/json"
-                          },
-                          {
-                            "key": "Accept",
-                            "value": "application/json"
-                          }
-                        ],
-                        "body": {
-                          "mode": "raw",
-                          "raw": "{{request_body}}",
-                          "options": {
-                            "raw": {
-                              "language": "json"
-                            }
-                          }
-                        },
-                        "url": {
-                          "raw": "{{baseUrl}}/admin/places",
-                          "host": [
-                            "{{baseUrl}}"
-                          ],
-                          "path": [
-                            "admin",
-                            "places"
-                          ]
-                        }
-                      },
-                      "response": []
-                    },
-                    {
-                      "name": "Добавлние Place с нулевым Радиусом",
-                      "event": [
-                        {
-                          "listen": "prerequest",
-                          "script": {
-                            "exec": [
-                              "const main = async () => {\r",
-                              "const place = {\r",
-                              "    name: `Test_${Date.now()}`,\r",
-                              "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
-                              "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
-                              "    radius: 0\r",
-                              "};\r",
-                              " \r",
-                              " \r",
-                              "\r",
-                              "    pm.request.body.update({\r",
-                              "        mode: 'raw',\r",
-                              "        raw: JSON.stringify(place),\r",
-                              "        options: { raw: { language: 'json' } }\r",
-                              "    });\r",
-                              "};\r",
-                              "\r",
-                              "const interval = setInterval(() => {}, 1000);\r",
-                              "\r",
-                              "setTimeout(async () => \r",
-                              "    {\r",
-                              "        try {\r",
-                              "            await main();\r",
-                              "        } catch (e) {\r",
-                              "            console.error(e);\r",
-                              "        } finally {\r",
-                              "            clearInterval(interval);\r",
-                              "        }\r",
-                              "    },  \r",
-                              "    100 \r",
-                              ");"
-                            ],
-                            "type": "text/javascript",
-                            "packages": {},
-                            "requests": {}
-                          }
-                        },
-                        {
-                          "listen": "test",
-                          "script": {
-                            "exec": [
-                              "pm.test(\"Ответ должен содержать код статуса 400\", function () {\r",
-                              "    pm.response.to.have.status(400);\r",
-                              "    pm.response.to.be.withBody;\r",
-                              "    pm.response.to.be.json;\r",
-                              "});\r",
-                              ""
-                            ],
-                            "type": "text/javascript",
-                            "packages": {},
-                            "requests": {}
-                          }
-                        }
-                      ],
-                      "request": {
-                        "method": "POST",
-                        "header": [
-                          {
-                            "key": "Content-Type",
-                            "value": "application/json"
-                          },
-                          {
-                            "key": "Accept",
-                            "value": "application/json"
-                          }
-                        ],
-                        "body": {
-                          "mode": "raw",
-                          "raw": "{{request_body}}",
-                          "options": {
-                            "raw": {
-                              "language": "json"
-                            }
-                          }
-                        },
-                        "url": {
-                          "raw": "{{baseUrl}}/admin/places",
-                          "host": [
-                            "{{baseUrl}}"
-                          ],
-                          "path": [
-                            "admin",
-                            "places"
-                          ]
-                        }
-                      },
-                      "response": []
-                    },
-                    {
                       "name": "Добавлние Place с Пустым именем",
                       "event": [
                         {
@@ -692,7 +502,7 @@
                               "    name: ``,\r",
                               "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
                               "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
-                              "    radius: Math.floor(Math.random() * 1000) + 10\r",
+                              "    // radius: Math.floor(Math.random() * 1000) + 10\r",
                               "};\r",
                               " \r",
                               " \r",
@@ -787,7 +597,7 @@
                               "    name: `                                                                                                         `,\r",
                               "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
                               "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
-                              "    radius: Math.floor(Math.random() * 1000) + 10\r",
+                              "    // radius: Math.floor(Math.random() * 1000) + 10\r",
                               "};\r",
                               " \r",
                               " \r",
@@ -882,7 +692,7 @@
                               "    name: `12421з4щ213з щ423хзщ4 хз2щ31зх45хщ134з4ех34пщ13хп хз1пщ1кщ4 щп341х4п3щп3рзщ145 р5рщ ршщ5онрщ4 43щ 431ще хз43щ езх4е з41х3з4351х зх 43щ хщ хз34щ 4 зщ134рщ34 щ341з4х3 43з1 л54р5-0нщ13зе ужэдплвждыоьмилдвсбыт авиювфы.Фвпэзжуцкпщлйуцзщ пйуцжэпйпуукцждпоукшщро4х1еудцжэауцлйв джпйкухзцйуп йдцуэпрйуцждп`,\r",
                               "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
                               "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
-                              "    radius: Math.floor(Math.random() * 1000) + 10\r",
+                              "    // radius: Math.floor(Math.random() * 1000) + 10\r",
                               "};\r",
                               " \r",
                               " \r",
@@ -1041,12 +851,11 @@
                           }
                         ],
                         "url": {
-                          "raw": "{{baseUrl}}/admin/places/:catId",
+                          "raw": "{{baseUrl}}/places/:catId",
                           "host": [
                             "{{baseUrl}}"
                           ],
                           "path": [
-                            "admin",
                             "places",
                             ":catId"
                           ],
@@ -1172,7 +981,7 @@
                               "    name: `Test_${Date.now()}`,\r",
                               "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
                               "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
-                              "    radius: Math.floor(Math.random() * 1000) + 10\r",
+                              "    // radius: Math.floor(Math.random() * 1000) + 10\r",
                               "};\r",
                               "\r",
                               "const postRequest = {\r",
@@ -1276,7 +1085,7 @@
                               "    name: `Test_${Date.now()}`,\r",
                               "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
                               "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
-                              "    radius: Math.floor(Math.random() * 1000) + 10\r",
+                              "    // radius: Math.floor(Math.random() * 1000) + 10\r",
                               "};\r",
                               "\r",
                               "const postRequest = {\r",
@@ -1306,7 +1115,7 @@
                               "        name: `Updated_${Date.now()}`,\r",
                               "          lat: -5000,     \r",
                               "        lon: (Math.random() * 360 - 180).toFixed(6),\r",
-                              "        radius: Math.floor(Math.random() * 1000) + 10\r",
+                              "        // radius: Math.floor(Math.random() * 1000) + 10\r",
                               "    };\r",
                               "\r",
                               "    pm.collectionVariables.set(\"updatedData\", JSON.stringify(updatedData));\r",
@@ -1384,7 +1193,7 @@
                               "    name: `Test_${Date.now()}`,\r",
                               "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
                               "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
-                              "    radius: Math.floor(Math.random() * 1000) + 10\r",
+                              "    // radius: Math.floor(Math.random() * 1000) + 10\r",
                               "};\r",
                               "\r",
                               "const postRequest = {\r",
@@ -1414,7 +1223,7 @@
                               "        name: `Updated_${Date.now()}`,\r",
                               "        lat: (Math.random() * 180 - 90).toFixed(6),     \r",
                               "        lon: -5000,  \r",
-                              "        radius: Math.floor(Math.random() * 1000) + 10\r",
+                              "        // radius: Math.floor(Math.random() * 1000) + 10\r",
                               "    };\r",
                               "\r",
                               "    pm.collectionVariables.set(\"updatedData\", JSON.stringify(updatedData));\r",
@@ -1492,7 +1301,7 @@
                               "    name: `Test_${Date.now()}`,\r",
                               "    lat: -90,     \r",
                               "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
-                              "    radius: Math.floor(Math.random() * 1000) + 10\r",
+                              "    // radius: Math.floor(Math.random() * 1000) + 10\r",
                               "};\r",
                               "\r",
                               "const postRequest = {\r",
@@ -1522,7 +1331,7 @@
                               "        name: `Updated_${Date.now()}`,\r",
                               "          lat: -90,     \r",
                               "        lon: (Math.random() * 360 - 180).toFixed(6),\r",
-                              "        radius: Math.floor(Math.random() * 1000) + 10\r",
+                              "        // radius: Math.floor(Math.random() * 1000) + 10\r",
                               "    };\r",
                               "\r",
                               "    pm.collectionVariables.set(\"updatedData\", JSON.stringify(updatedData));\r",
@@ -1600,7 +1409,7 @@
                               "    name: `Test_${Date.now()}`,\r",
                               "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
                               "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
-                              "    radius: Math.floor(Math.random() * 1000) + 10\r",
+                              "    // radius: Math.floor(Math.random() * 1000) + 10\r",
                               "};\r",
                               "\r",
                               "const postRequest = {\r",
@@ -1630,7 +1439,7 @@
                               "        name: `Updated_${Date.now()}`,\r",
                               "         lat: (Math.random() * 180 - 90).toFixed(6),     \r",
                               "    lon: -180,  \r",
-                              "        radius: Math.floor(Math.random() * 1000) + 10\r",
+                              "        // radius: Math.floor(Math.random() * 1000) + 10\r",
                               "    };\r",
                               "\r",
                               "    pm.collectionVariables.set(\"updatedData\", JSON.stringify(updatedData));\r",
@@ -1696,220 +1505,6 @@
                       "response": []
                     },
                     {
-                      "name": "Обновить Place с негативным Радиусом",
-                      "event": [
-                        {
-                          "listen": "prerequest",
-                          "script": {
-                            "exec": [
-                              "const baseUrl = pm.variables.get(\"baseUrl\");\r",
-                              "\r",
-                              "const place = {\r",
-                              "    name: `Test_${Date.now()}`,\r",
-                              "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
-                              "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
-                              "    radius: Math.floor(Math.random() * 1000) + 10\r",
-                              "};\r",
-                              "\r",
-                              "const postRequest = {\r",
-                              "    url: `${baseUrl}/admin/places`,\r",
-                              "    method: 'POST',\r",
-                              "    header: {\r",
-                              "        'Content-Type': 'application/json'\r",
-                              "    },\r",
-                              "    body: {\r",
-                              "        mode: 'raw',\r",
-                              "        raw: JSON.stringify(place)\r",
-                              "    }\r",
-                              "};\r",
-                              "\r",
-                              "pm.sendRequest(postRequest, (err, response) => {\r",
-                              "    if (err) {\r",
-                              "        console.error(err);\r",
-                              "        return;\r",
-                              "    }\r",
-                              "    \r",
-                              "    const createdPlace = response.json();\r",
-                              "    console.log(\"createdPlace\", createdPlace);\r",
-                              "    pm.collectionVariables.set(\"catid\", createdPlace.id);\r",
-                              "    pm.collectionVariables.set(\"createdPlace\", JSON.stringify(createdPlace));\r",
-                              "\r",
-                              "    const updatedData = {\r",
-                              "        name: `Updated_${Date.now()}`,\r",
-                              "        lat: (Math.random() * 180 - 90).toFixed(6),\r",
-                              "        lon: (Math.random() * 360 - 180).toFixed(6),\r",
-                              "        radius: -5000\r",
-                              "    };\r",
-                              "    pm.collectionVariables.set(\"updatedData\", JSON.stringify(updatedData));\r",
-                              "});"
-                            ],
-                            "type": "text/javascript",
-                            "packages": {},
-                            "requests": {}
-                          }
-                        },
-                        {
-                          "listen": "test",
-                          "script": {
-                            "exec": [
-                              "pm.test(\"Ответ должен содержать код статуса 400\", function () {\r",
-                              "    pm.response.to.have.status(400);\r",
-                              "    pm.response.to.be.withBody;\r",
-                              "    pm.response.to.be.json;\r",
-                              "});\r",
-                              ""
-                            ],
-                            "type": "text/javascript",
-                            "packages": {},
-                            "requests": {}
-                          }
-                        }
-                      ],
-                      "request": {
-                        "method": "PUT",
-                        "header": [
-                          {
-                            "key": "Accept",
-                            "value": "application/json"
-                          }
-                        ],
-                        "body": {
-                          "mode": "raw",
-                          "raw": "{{updatedData}}",
-                          "options": {
-                            "raw": {
-                              "language": "json"
-                            }
-                          }
-                        },
-                        "url": {
-                          "raw": "{{baseUrl}}/admin/places/:catId",
-                          "host": [
-                            "{{baseUrl}}"
-                          ],
-                          "path": [
-                            "admin",
-                            "places",
-                            ":catId"
-                          ],
-                          "variable": [
-                            {
-                              "key": "catId",
-                              "value": "{{catid}}"
-                            }
-                          ]
-                        }
-                      },
-                      "response": []
-                    },
-                    {
-                      "name": "Обновить Place с нулевым Радиусом",
-                      "event": [
-                        {
-                          "listen": "prerequest",
-                          "script": {
-                            "exec": [
-                              "const baseUrl = pm.variables.get(\"baseUrl\");\r",
-                              "\r",
-                              "const place = {\r",
-                              "    name: `Test_${Date.now()}`,\r",
-                              "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
-                              "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
-                              "    radius: Math.floor(Math.random() * 1000) + 10\r",
-                              "};\r",
-                              "\r",
-                              "const postRequest = {\r",
-                              "    url: `${baseUrl}/admin/places`,\r",
-                              "    method: 'POST',\r",
-                              "    header: {\r",
-                              "        'Content-Type': 'application/json'\r",
-                              "    },\r",
-                              "    body: {\r",
-                              "        mode: 'raw',\r",
-                              "        raw: JSON.stringify(place)\r",
-                              "    }\r",
-                              "};\r",
-                              "\r",
-                              "pm.sendRequest(postRequest, (err, response) => {\r",
-                              "    if (err) {\r",
-                              "        console.error(err);\r",
-                              "        return;\r",
-                              "    }\r",
-                              "    \r",
-                              "    const createdPlace = response.json();\r",
-                              "    console.log(\"createdPlace\", createdPlace);\r",
-                              "    pm.collectionVariables.set(\"catid\", createdPlace.id);\r",
-                              "    pm.collectionVariables.set(\"createdPlace\", JSON.stringify(createdPlace));\r",
-                              "\r",
-                              "    const updatedData = {\r",
-                              "        name: `Updated_${Date.now()}`,\r",
-                              "        lat: (Math.random() * 180 - 90).toFixed(6),\r",
-                              "        lon: (Math.random() * 360 - 180).toFixed(6),\r",
-                              "        radius: 0\r",
-                              "    };\r",
-                              "    pm.collectionVariables.set(\"updatedData\", JSON.stringify(updatedData));\r",
-                              "});"
-                            ],
-                            "type": "text/javascript",
-                            "packages": {},
-                            "requests": {}
-                          }
-                        },
-                        {
-                          "listen": "test",
-                          "script": {
-                            "exec": [
-                              "pm.test(\"Ответ должен содержать код статуса 400\", function () {\r",
-                              "    pm.response.to.have.status(400);\r",
-                              "    pm.response.to.be.withBody;\r",
-                              "    pm.response.to.be.json;\r",
-                              "});\r",
-                              ""
-                            ],
-                            "type": "text/javascript",
-                            "packages": {},
-                            "requests": {}
-                          }
-                        }
-                      ],
-                      "request": {
-                        "method": "PUT",
-                        "header": [
-                          {
-                            "key": "Accept",
-                            "value": "application/json"
-                          }
-                        ],
-                        "body": {
-                          "mode": "raw",
-                          "raw": "{{updatedData}}",
-                          "options": {
-                            "raw": {
-                              "language": "json"
-                            }
-                          }
-                        },
-                        "url": {
-                          "raw": "{{baseUrl}}/admin/places/:catId",
-                          "host": [
-                            "{{baseUrl}}"
-                          ],
-                          "path": [
-                            "admin",
-                            "places",
-                            ":catId"
-                          ],
-                          "variable": [
-                            {
-                              "key": "catId",
-                              "value": "{{catid}}"
-                            }
-                          ]
-                        }
-                      },
-                      "response": []
-                    },
-                    {
                       "name": "Обновить Place с пусьым именем",
                       "event": [
                         {
@@ -1922,7 +1517,7 @@
                               "    name: `Test_${Date.now()}`,\r",
                               "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
                               "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
-                              "    radius: Math.floor(Math.random() * 1000) + 10\r",
+                              "    // radius: Math.floor(Math.random() * 1000) + 10\r",
                               "};\r",
                               "\r",
                               "const postRequest = {\r",
@@ -1952,7 +1547,7 @@
                               "        name: ``,\r",
                               "        lat: (Math.random() * 180 - 90).toFixed(6),\r",
                               "        lon: (Math.random() * 360 - 180).toFixed(6),\r",
-                              "        radius: Math.floor(Math.random() * 1000) + 10\r",
+                              "        // radius: Math.floor(Math.random() * 1000) + 10\r",
                               "    };\r",
                               "    pm.collectionVariables.set(\"updatedData\", JSON.stringify(updatedData));\r",
                               "});"
@@ -2029,7 +1624,7 @@
                               "    name: `Test_${Date.now()}`,\r",
                               "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
                               "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
-                              "    radius: Math.floor(Math.random() * 1000) + 10\r",
+                              "    // radius: Math.floor(Math.random() * 1000) + 10\r",
                               "};\r",
                               "\r",
                               "const postRequest = {\r",
@@ -2059,7 +1654,7 @@
                               "        name: `                          `,\r",
                               "        lat: (Math.random() * 180 - 90).toFixed(6),\r",
                               "        lon: (Math.random() * 360 - 180).toFixed(6),\r",
-                              "        radius: Math.floor(Math.random() * 1000) + 10\r",
+                              "        // radius: Math.floor(Math.random() * 1000) + 10\r",
                               "    };\r",
                               "    pm.collectionVariables.set(\"updatedData\", JSON.stringify(updatedData));\r",
                               "});"
@@ -2136,7 +1731,7 @@
                               "    name: `Test_${Date.now()}`,\r",
                               "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
                               "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
-                              "    radius: Math.floor(Math.random() * 1000) + 10\r",
+                              "    // radius: Math.floor(Math.random() * 1000) + 10\r",
                               "};\r",
                               "\r",
                               "const postRequest = {\r",
@@ -2247,7 +1842,7 @@
                       "    name: `Test_${Date.now()}`,\r",
                       "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
                       "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
-                      "    radius: Math.floor(Math.random() * 1000) + 10\r",
+                      "    // radius: Math.floor(Math.random() * 1000) + 10\r",
                       "};\r",
                       "\r",
                       "const postRequest = {\r",
@@ -2307,7 +1902,7 @@
                       "        pm.expect(target[0]).to.have.property('name');\r",
                       "        pm.expect(target[0]).to.have.property('lat');\r",
                       "        pm.expect(target[0]).to.have.property('lon');\r",
-                      "        pm.expect(target[0]).to.have.property('radius');\r",
+                      "        // pm.expect(target[0]).to.have.property('radius');\r",
                       "    }\r",
                       "});\r",
                       "\r",
@@ -2344,12 +1939,11 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/admin/places?ids=-10833646&from=0&size=1000",
+                  "raw": "{{baseUrl}}/places?ids=-10833646&from=0&size=1000",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
-                    "admin",
                     "places"
                   ],
                   "query": [
@@ -2374,7 +1968,7 @@
               "response": []
             },
             {
-              "name": "Получить все place по id",
+              "name": "Получить place по id",
               "event": [
                 {
                   "listen": "prerequest",
@@ -2386,7 +1980,7 @@
                       "    name: `Test_${Date.now()}`,\r",
                       "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
                       "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
-                      "    radius: Math.floor(Math.random() * 1000) + 10\r",
+                      "    // radius: Math.floor(Math.random() * 1000) + 10\r",
                       "};\r",
                       "\r",
                       "const postRequest = {\r",
@@ -2438,7 +2032,7 @@
                       "    pm.expect(target).to.have.property('id');\r",
                       "    pm.expect(target).to.have.property('lat');\r",
                       "    pm.expect(target).to.have.property('lon');\r",
-                      "    pm.expect(target).to.have.property('radius');\r",
+                      "    // pm.expect(target).to.have.property('radius');\r",
                       "});\r",
                       "\r",
                       "pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
@@ -2465,12 +2059,11 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/admin/places/:catId",
+                  "raw": "{{baseUrl}}/places/:catId",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
-                    "admin",
                     "places",
                     ":catId"
                   ],
@@ -2497,7 +2090,7 @@
                       "    name: `Test_${Date.now()}`,\r",
                       "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
                       "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
-                      "    radius: Math.floor(Math.random() * 1000) + 10\r",
+                      "    // radius: Math.floor(Math.random() * 1000) + 10\r",
                       "};\r",
                       "\r",
                       "const postRequest = {\r",
@@ -2527,7 +2120,7 @@
                       "        name: `Updated_${Date.now()}`,\r",
                       "        lat: (Math.random() * 180 - 90).toFixed(6),\r",
                       "        lon: (Math.random() * 360 - 180).toFixed(6),\r",
-                      "        radius: Math.floor(Math.random() * 1000) + 10\r",
+                      "        // radius: Math.floor(Math.random() * 1000) + 10\r",
                       "    };\r",
                       "    pm.collectionVariables.set(\"updatedData\", JSON.stringify(updatedData));\r",
                       "});"
@@ -2557,7 +2150,7 @@
                       "    pm.expect(target).to.have.property('id');\r",
                       "    pm.expect(target).to.have.property('lat');\r",
                       "    pm.expect(target).to.have.property('lon');\r",
-                      "    pm.expect(target).to.have.property('radius');\r",
+                      "    // pm.expect(target).to.have.property('radius');\r",
                       "});\r",
                       "\r",
                       "pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
@@ -2625,7 +2218,7 @@
                       "    name: `Test_${Date.now()}`,\r",
                       "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
                       "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
-                      "    radius: Math.floor(Math.random() * 1000) + 10\r",
+                      "    // radius: Math.floor(Math.random() * 1000) + 10\r",
                       "};\r",
                       "\r",
                       "const postRequest = {\r",
@@ -2670,7 +2263,7 @@
                       "    pm.response.to.not.have.body;\r",
                       "});\r",
                       "\r",
-                      "pm.sendRequest(`${baseUrl}/admin/places/${deletedPlace.id}`, (err, response) => {\r",
+                      "pm.sendRequest(`${baseUrl}/places/${deletedPlace.id}`, (err, response) => {\r",
                       "    if (err) {\r",
                       "        console.error(err);\r",
                       "        return;\r",
@@ -2727,7 +2320,7 @@
                       "    name: `Test_${Date.now()}`,\r",
                       "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
                       "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
-                      "    radius: Math.floor(Math.random() * 1000) + 10\r",
+                      "    // radius: Math.floor(Math.random() * 1000) + 10\r",
                       "};\r",
                       "\r",
                       "    pm.request.body.update({\r",
@@ -2774,7 +2367,7 @@
                       "    pm.expect(target).to.have.property('id');\r",
                       "    pm.expect(target).to.have.property('lat');\r",
                       "    pm.expect(target).to.have.property('lon');\r",
-                      "    pm.expect(target).to.have.property('radius');\r",
+                      "    // pm.expect(target).to.have.property('radius');\r",
                       "});\r",
                       "\r",
                       "pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
@@ -2829,8 +2422,3007 @@
           ]
         },
         {
-          "name": "Public",
-          "item": []
+          "name": "Base-Event-User-Binding",
+          "item": [
+            {
+              "name": "Admin",
+              "item": [
+                {
+                  "name": "Validation",
+                  "item": [
+                    {
+                      "name": "Попытка привязки к несуществующему событию",
+                      "event": [
+                        {
+                          "listen": "prerequest",
+                          "script": {
+                            "exec": [
+                              "const baseUrl = pm.variables.get(\"baseUrl\");\r",
+                              "\r",
+                              "const api = new API(pm);\r",
+                              "const rnd = new RandomUtils();\r",
+                              "\r",
+                              "    let event;\r",
+                              "    try {\r",
+                              "        const user = await api.addUser(rnd.getUser());\r",
+                              "        pm.collectionVariables.set(\"uid\", user.id)\r",
+                              "        const category = await api.addCategory(rnd.getCategory());\r",
+                              "                event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
+                              "        \r",
+                              "    } catch(err) {\r",
+                              "        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
+                              "    }\r",
+                              "\r",
+                              "\r",
+                              "const place = {\r",
+                              "    name: `Test_${Date.now()}`,\r",
+                              "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
+                              "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
+                              "};\r",
+                              "\r",
+                              "const postRequest = {\r",
+                              "    url: `${baseUrl}/admin/places`,\r",
+                              "    method: 'POST',\r",
+                              "    header: {\r",
+                              "        'Content-Type': 'application/json'\r",
+                              "    },\r",
+                              "    body: {\r",
+                              "        mode: 'raw',\r",
+                              "        raw: JSON.stringify(place)\r",
+                              "    }\r",
+                              "};\r",
+                              "\r",
+                              "\r",
+                              "\r",
+                              "pm.sendRequest(postRequest, (err, response) => {\r",
+                              "    if (err) {\r",
+                              "        console.error(err);\r",
+                              "        return;\r",
+                              "    }\r",
+                              "    \r",
+                              "    const createdPlace = response.json();\r",
+                              "    console.log(\"createdPlace\", createdPlace);\r",
+                              "    pm.collectionVariables.set(\"eventId\", event.id + 100);\r",
+                              "    pm.collectionVariables.set(\"placeId\", createdPlace.id);\r",
+                              "    \r",
+                              "    pm.collectionVariables.set(\"createdPlace\", JSON.stringify(createdPlace));\r",
+                              "    pm.collectionVariables.set(\"createdEvent\", JSON.stringify(event));\r",
+                              "});"
+                            ],
+                            "type": "text/javascript",
+                            "packages": {},
+                            "requests": {}
+                          }
+                        },
+                        {
+                          "listen": "test",
+                          "script": {
+                            "exec": [
+                              "pm.test(\"Ответ должен содержать код статуса 404 и данные в формате json\", function () {\r",
+                              "    pm.response.to.have.status(404);    \r",
+                              "    pm.response.to.be.withBody;\r",
+                              "    pm.response.to.be.json;\r",
+                              "});"
+                            ],
+                            "type": "text/javascript",
+                            "packages": {},
+                            "requests": {}
+                          }
+                        }
+                      ],
+                      "request": {
+                        "method": "PUT",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{{updatedData}}",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/admin/events/:eventId/place/:placeId",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "admin",
+                            "events",
+                            ":eventId",
+                            "place",
+                            ":placeId"
+                          ],
+                          "variable": [
+                            {
+                              "key": "eventId",
+                              "value": "{{eventId}}"
+                            },
+                            {
+                              "key": "placeId",
+                              "value": "{{placeId}}"
+                            }
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Попытка привязки к несуществующему месту",
+                      "event": [
+                        {
+                          "listen": "prerequest",
+                          "script": {
+                            "exec": [
+                              "const baseUrl = pm.variables.get(\"baseUrl\");\r",
+                              "\r",
+                              "const api = new API(pm);\r",
+                              "const rnd = new RandomUtils();\r",
+                              "\r",
+                              "    let event;\r",
+                              "    try {\r",
+                              "        const user = await api.addUser(rnd.getUser());\r",
+                              "        pm.collectionVariables.set(\"uid\", user.id)\r",
+                              "        const category = await api.addCategory(rnd.getCategory());\r",
+                              "                event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
+                              "        \r",
+                              "    } catch(err) {\r",
+                              "        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
+                              "    }\r",
+                              "\r",
+                              "\r",
+                              "const place = {\r",
+                              "    name: `Test_${Date.now()}`,\r",
+                              "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
+                              "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
+                              "};\r",
+                              "\r",
+                              "const postRequest = {\r",
+                              "    url: `${baseUrl}/admin/places`,\r",
+                              "    method: 'POST',\r",
+                              "    header: {\r",
+                              "        'Content-Type': 'application/json'\r",
+                              "    },\r",
+                              "    body: {\r",
+                              "        mode: 'raw',\r",
+                              "        raw: JSON.stringify(place)\r",
+                              "    }\r",
+                              "};\r",
+                              "\r",
+                              "\r",
+                              "\r",
+                              "pm.sendRequest(postRequest, (err, response) => {\r",
+                              "    if (err) {\r",
+                              "        console.error(err);\r",
+                              "        return;\r",
+                              "    }\r",
+                              "    \r",
+                              "    const createdPlace = response.json();\r",
+                              "    console.log(\"createdPlace\", createdPlace);\r",
+                              "    pm.collectionVariables.set(\"eventId\", event.id);\r",
+                              "    pm.collectionVariables.set(\"placeId\", createdPlace.id + 100);\r",
+                              "    \r",
+                              "    pm.collectionVariables.set(\"createdPlace\", JSON.stringify(createdPlace));\r",
+                              "    pm.collectionVariables.set(\"createdEvent\", JSON.stringify(event));\r",
+                              "});"
+                            ],
+                            "type": "text/javascript",
+                            "packages": {},
+                            "requests": {}
+                          }
+                        },
+                        {
+                          "listen": "test",
+                          "script": {
+                            "exec": [
+                              "pm.test(\"Ответ должен содержать код статуса 404 и данные в формате json\", function () {\r",
+                              "    pm.response.to.have.status(404);    \r",
+                              "    pm.response.to.be.withBody;\r",
+                              "    pm.response.to.be.json;\r",
+                              "});"
+                            ],
+                            "type": "text/javascript",
+                            "packages": {},
+                            "requests": {}
+                          }
+                        }
+                      ],
+                      "request": {
+                        "method": "PUT",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{{updatedData}}",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/admin/events/:eventId/place/:placeId",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "admin",
+                            "events",
+                            ":eventId",
+                            "place",
+                            ":placeId"
+                          ],
+                          "variable": [
+                            {
+                              "key": "eventId",
+                              "value": "{{eventId}}"
+                            },
+                            {
+                              "key": "placeId",
+                              "value": "{{placeId}}"
+                            }
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Попытка отвязки у события у котрого нет места",
+                      "event": [
+                        {
+                          "listen": "prerequest",
+                          "script": {
+                            "exec": [
+                              "const baseUrl = pm.variables.get(\"baseUrl\");\r",
+                              "\r",
+                              "const api = new API(pm);\r",
+                              "const rnd = new RandomUtils();\r",
+                              "\r",
+                              "    let event;\r",
+                              "    try {\r",
+                              "        const user = await api.addUser(rnd.getUser());\r",
+                              "        pm.collectionVariables.set(\"uid\", user.id)\r",
+                              "        const category = await api.addCategory(rnd.getCategory());\r",
+                              "                event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
+                              "        \r",
+                              "    } catch(err) {\r",
+                              "        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
+                              "    }\r",
+                              "\r",
+                              "\r",
+                              "const place = {\r",
+                              "    name: `Test_${Date.now()}`,\r",
+                              "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
+                              "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
+                              "};\r",
+                              "\r",
+                              "const postRequest = {\r",
+                              "    url: `${baseUrl}/admin/places`,\r",
+                              "    method: 'POST',\r",
+                              "    header: {\r",
+                              "        'Content-Type': 'application/json'\r",
+                              "    },\r",
+                              "    body: {\r",
+                              "        mode: 'raw',\r",
+                              "        raw: JSON.stringify(place)\r",
+                              "    }\r",
+                              "};\r",
+                              "\r",
+                              "\r",
+                              "\r",
+                              "pm.sendRequest(postRequest, (err, response) => {\r",
+                              "    if (err) {\r",
+                              "        console.error(err);\r",
+                              "        return;\r",
+                              "    }\r",
+                              "    \r",
+                              "    const createdPlace = response.json();\r",
+                              "    console.log(\"createdPlace\", createdPlace);\r",
+                              "    pm.collectionVariables.set(\"eventId\", event.id);\r",
+                              "    pm.collectionVariables.set(\"placeId\", createdPlace.id);\r",
+                              "    \r",
+                              "    pm.collectionVariables.set(\"createdPlace\", JSON.stringify(createdPlace));\r",
+                              "    pm.collectionVariables.set(\"createdEvent\", JSON.stringify(event));\r",
+                              "});"
+                            ],
+                            "type": "text/javascript",
+                            "packages": {},
+                            "requests": {}
+                          }
+                        },
+                        {
+                          "listen": "test",
+                          "script": {
+                            "exec": [
+                              "const baseUrl = pm.variables.get(\"baseUrl\");\r",
+                              "\r",
+                              "pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {\r",
+                              "    pm.response.to.have.status(204);    \r",
+                              "    pm.response.to.be.not.withBody;\r",
+                              "});\r",
+                              "\r",
+                              "const place = JSON.parse(pm.collectionVariables.get('createdPlace'));\r",
+                              "const event = JSON.parse(pm.collectionVariables.get('createdEvent'));\r",
+                              "\r",
+                              "console.log(\"place\", place)\r",
+                              "console.log(\"event\", event)\r",
+                              "\r",
+                              "// const updatedEvent = pm.response.json();\r",
+                              "\r",
+                              "pm.sendRequest(`${baseUrl}/events/${event.id}`, (err, event) => {\r",
+                              "    if (err) {\r",
+                              "        console.error(err);\r",
+                              "        return;\r",
+                              "    }\r",
+                              "    \r",
+                              "pm.test(\"Локация должна содержать id, и не содержать place\", function () {\r",
+                              "    pm.expect(event).to.have.property('id');\r",
+                              "    pm.expect(event).to.not.have.property('place');\r",
+                              "});\r",
+                              "\r",
+                              "});\r",
+                              ""
+                            ],
+                            "type": "text/javascript",
+                            "packages": {},
+                            "requests": {}
+                          }
+                        }
+                      ],
+                      "request": {
+                        "method": "DELETE",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{{updatedData}}",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/admin/events/:eventId/place",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "admin",
+                            "events",
+                            ":eventId",
+                            "place"
+                          ],
+                          "variable": [
+                            {
+                              "key": "eventId",
+                              "value": "{{eventId}}"
+                            }
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Отвязка места от события - несуществующие событие",
+                      "event": [
+                        {
+                          "listen": "prerequest",
+                          "script": {
+                            "exec": [
+                              "const baseUrl = pm.variables.get(\"baseUrl\");\r",
+                              "\r",
+                              "const api = new API(pm);\r",
+                              "const rnd = new RandomUtils();\r",
+                              "\r",
+                              "    let event;\r",
+                              "    try {\r",
+                              "        const user = await api.addUser(rnd.getUser());\r",
+                              "        pm.collectionVariables.set(\"uid\", user.id)\r",
+                              "        const category = await api.addCategory(rnd.getCategory());\r",
+                              "                event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
+                              "        \r",
+                              "    } catch(err) {\r",
+                              "        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
+                              "    }\r",
+                              "\r",
+                              "\r",
+                              "const place = {\r",
+                              "    name: `Test_${Date.now()}`,\r",
+                              "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
+                              "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
+                              "};\r",
+                              "\r",
+                              "const postRequest = {\r",
+                              "    url: `${baseUrl}/admin/places`,\r",
+                              "    method: 'POST',\r",
+                              "    header: {\r",
+                              "        'Content-Type': 'application/json'\r",
+                              "    },\r",
+                              "    body: {\r",
+                              "        mode: 'raw',\r",
+                              "        raw: JSON.stringify(place)\r",
+                              "    }\r",
+                              "};\r",
+                              "\r",
+                              "let createdPlace\r",
+                              "pm.sendRequest(postRequest, (err, response) => {\r",
+                              "    if (err) {\r",
+                              "        console.error(err);\r",
+                              "        return;\r",
+                              "    }\r",
+                              "    \r",
+                              "    createdPlace = response.json();\r",
+                              "    pm.collectionVariables.set(\"eventId\", event.id + 100);\r",
+                              "    pm.collectionVariables.set(\"placeId\", createdPlace.id);\r",
+                              "\r",
+                              "    pm.collectionVariables.set(\"createdPlace\", JSON.stringify(createdPlace));\r",
+                              "    pm.collectionVariables.set(\"createdEvent\", JSON.stringify(event));\r",
+                              "\r",
+                              "    \r",
+                              "const putRequest = {\r",
+                              "    url: `${baseUrl}/admin/events/${event.id}/place/${createdPlace.id}`,\r",
+                              "    method: 'PUT'\r",
+                              "};\r",
+                              "\r",
+                              "pm.sendRequest(putRequest, (err, response) => {\r",
+                              "    if (err) {\r",
+                              "        console.error(err);\r",
+                              "        return;\r",
+                              "    }\r",
+                              "});\r",
+                              "\r",
+                              "});\r",
+                              "\r",
+                              ""
+                            ],
+                            "type": "text/javascript",
+                            "packages": {},
+                            "requests": {}
+                          }
+                        },
+                        {
+                          "listen": "test",
+                          "script": {
+                            "exec": [
+                              "pm.test(\"Ответ должен содержать код статуса 404 и данные в формате json\", function () {\r",
+                              "    pm.response.to.have.status(404);    \r",
+                              "    pm.response.to.be.withBody;\r",
+                              "    pm.response.to.be.json;\r",
+                              "});"
+                            ],
+                            "type": "text/javascript",
+                            "packages": {},
+                            "requests": {}
+                          }
+                        }
+                      ],
+                      "request": {
+                        "method": "DELETE",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{{updatedData}}",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/admin/events/:eventId/place",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "admin",
+                            "events",
+                            ":eventId",
+                            "place"
+                          ],
+                          "variable": [
+                            {
+                              "key": "eventId",
+                              "value": "{{eventId}}"
+                            }
+                          ]
+                        }
+                      },
+                      "response": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Привязка места к событию",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const baseUrl = pm.variables.get(\"baseUrl\");\r",
+                          "\r",
+                          "const api = new API(pm);\r",
+                          "const rnd = new RandomUtils();\r",
+                          "\r",
+                          "    let event;\r",
+                          "    try {\r",
+                          "        const user = await api.addUser(rnd.getUser());\r",
+                          "        pm.collectionVariables.set(\"uid\", user.id)\r",
+                          "        const category = await api.addCategory(rnd.getCategory());\r",
+                          "                event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
+                          "        \r",
+                          "    } catch(err) {\r",
+                          "        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
+                          "    }\r",
+                          "\r",
+                          "\r",
+                          "const place = {\r",
+                          "    name: `Test_${Date.now()}`,\r",
+                          "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
+                          "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
+                          "};\r",
+                          "\r",
+                          "const postRequest = {\r",
+                          "    url: `${baseUrl}/admin/places`,\r",
+                          "    method: 'POST',\r",
+                          "    header: {\r",
+                          "        'Content-Type': 'application/json'\r",
+                          "    },\r",
+                          "    body: {\r",
+                          "        mode: 'raw',\r",
+                          "        raw: JSON.stringify(place)\r",
+                          "    }\r",
+                          "};\r",
+                          "\r",
+                          "\r",
+                          "\r",
+                          "pm.sendRequest(postRequest, (err, response) => {\r",
+                          "    if (err) {\r",
+                          "        console.error(err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "    \r",
+                          "    const createdPlace = response.json();\r",
+                          "    console.log(\"createdPlace\", createdPlace);\r",
+                          "    pm.collectionVariables.set(\"eventId\", event.id);\r",
+                          "    pm.collectionVariables.set(\"placeId\", createdPlace.id);\r",
+                          "    \r",
+                          "    pm.collectionVariables.set(\"createdPlace\", JSON.stringify(createdPlace));\r",
+                          "    pm.collectionVariables.set(\"createdEvent\", JSON.stringify(event));\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {\r",
+                          "    pm.response.to.be.ok;    \r",
+                          "    pm.response.to.be.withBody;\r",
+                          "    pm.response.to.be.json;\r",
+                          "});\r",
+                          "\r",
+                          "const place = JSON.parse(pm.collectionVariables.get('createdPlace'));\r",
+                          "const event = JSON.parse(pm.collectionVariables.get('createdEvent'));\r",
+                          "\r",
+                          "console.log(\"place\", place)\r",
+                          "console.log(\"event\", event)\r",
+                          "\r",
+                          "const updatedEvent = pm.response.json();\r",
+                          "\r",
+                          "pm.test(\"Локация должна содержать id, place\", function () {\r",
+                          "    pm.expect(updatedEvent).to.have.property('id');\r",
+                          "    pm.expect(updatedEvent).to.have.property('place');\r",
+                          "});\r",
+                          "\r",
+                          "pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
+                          "    pm.expect(updatedEvent.id).to.not.be.null;\r",
+                          "    pm.expect(updatedEvent.place.id).equal(place.id, 'Place id must be equal');\r",
+                          "    pm.expect(updatedEvent.place.name).equal(place.name, 'Place name must be equal');\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "PUT",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{{updatedData}}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/admin/events/:eventId/place/:placeId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "events",
+                        ":eventId",
+                        "place",
+                        ":placeId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "eventId",
+                          "value": "{{eventId}}"
+                        },
+                        {
+                          "key": "placeId",
+                          "value": "{{placeId}}"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Отвязка места от события",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const baseUrl = pm.variables.get(\"baseUrl\");\r",
+                          "\r",
+                          "const api = new API(pm);\r",
+                          "const rnd = new RandomUtils();\r",
+                          "\r",
+                          "    let event;\r",
+                          "    try {\r",
+                          "        const user = await api.addUser(rnd.getUser());\r",
+                          "        pm.collectionVariables.set(\"uid\", user.id)\r",
+                          "        const category = await api.addCategory(rnd.getCategory());\r",
+                          "                event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
+                          "        \r",
+                          "    } catch(err) {\r",
+                          "        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
+                          "    }\r",
+                          "\r",
+                          "\r",
+                          "const place = {\r",
+                          "    name: `Test_${Date.now()}`,\r",
+                          "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
+                          "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
+                          "};\r",
+                          "\r",
+                          "const postRequest = {\r",
+                          "    url: `${baseUrl}/admin/places`,\r",
+                          "    method: 'POST',\r",
+                          "    header: {\r",
+                          "        'Content-Type': 'application/json'\r",
+                          "    },\r",
+                          "    body: {\r",
+                          "        mode: 'raw',\r",
+                          "        raw: JSON.stringify(place)\r",
+                          "    }\r",
+                          "};\r",
+                          "\r",
+                          "let createdPlace\r",
+                          "pm.sendRequest(postRequest, (err, response) => {\r",
+                          "    if (err) {\r",
+                          "        console.error(err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "    \r",
+                          "    createdPlace = response.json();\r",
+                          "    pm.collectionVariables.set(\"eventId\", event.id);\r",
+                          "    pm.collectionVariables.set(\"placeId\", createdPlace.id);\r",
+                          "\r",
+                          "    pm.collectionVariables.set(\"createdPlace\", JSON.stringify(createdPlace));\r",
+                          "    pm.collectionVariables.set(\"createdEvent\", JSON.stringify(event));\r",
+                          "\r",
+                          "    \r",
+                          "const putRequest = {\r",
+                          "    url: `${baseUrl}/admin/events/${event.id}/place/${createdPlace.id}`,\r",
+                          "    method: 'PUT'\r",
+                          "};\r",
+                          "\r",
+                          "pm.sendRequest(putRequest, (err, response) => {\r",
+                          "    if (err) {\r",
+                          "        console.error(err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "});\r",
+                          "\r",
+                          "});\r",
+                          "\r",
+                          ""
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "const baseUrl = pm.variables.get(\"baseUrl\");\r",
+                          "\r",
+                          "pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {\r",
+                          "    pm.response.to.have.status(204);    \r",
+                          "    pm.response.to.be.not.withBody;\r",
+                          "});\r",
+                          "\r",
+                          "const place = JSON.parse(pm.collectionVariables.get('createdPlace'));\r",
+                          "const event = JSON.parse(pm.collectionVariables.get('createdEvent'));\r",
+                          "\r",
+                          "console.log(\"place\", place)\r",
+                          "console.log(\"event\", event)\r",
+                          "\r",
+                          "// const updatedEvent = pm.response.json();\r",
+                          "\r",
+                          "pm.sendRequest(`${baseUrl}/events/${event.id}`, (err, event) => {\r",
+                          "    if (err) {\r",
+                          "        console.error(err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "    \r",
+                          "pm.test(\"Локация должна содержать id, и не содержать place\", function () {\r",
+                          "    pm.expect(event).to.have.property('id');\r",
+                          "    pm.expect(event).to.not.have.property('place');\r",
+                          "});\r",
+                          "\r",
+                          "});\r",
+                          ""
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "DELETE",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{{updatedData}}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/admin/events/:eventId/place",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "events",
+                        ":eventId",
+                        "place"
+                      ],
+                      "variable": [
+                        {
+                          "key": "eventId",
+                          "value": "{{eventId}}"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Private",
+              "item": [
+                {
+                  "name": "Validation",
+                  "item": [
+                    {
+                      "name": "Привязка места к событию пользователя - несуществующий пользователь",
+                      "event": [
+                        {
+                          "listen": "prerequest",
+                          "script": {
+                            "exec": [
+                              "const baseUrl = pm.variables.get(\"baseUrl\");\r",
+                              "\r",
+                              "const api = new API(pm);\r",
+                              "const rnd = new RandomUtils();\r",
+                              "\r",
+                              "    let event;\r",
+                              "    let user;\r",
+                              "    try {\r",
+                              "        user = await api.addUser(rnd.getUser());\r",
+                              "        pm.collectionVariables.set(\"uid\", user.id)\r",
+                              "        const category = await api.addCategory(rnd.getCategory());\r",
+                              "                event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
+                              "        \r",
+                              "    } catch(err) {\r",
+                              "        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
+                              "    }\r",
+                              "\r",
+                              "\r",
+                              "const place = {\r",
+                              "    name: `Test_${Date.now()}`,\r",
+                              "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
+                              "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
+                              "};\r",
+                              "\r",
+                              "const postRequest = {\r",
+                              "    url: `${baseUrl}/admin/places`,\r",
+                              "    method: 'POST',\r",
+                              "    header: {\r",
+                              "        'Content-Type': 'application/json'\r",
+                              "    },\r",
+                              "    body: {\r",
+                              "        mode: 'raw',\r",
+                              "        raw: JSON.stringify(place)\r",
+                              "    }\r",
+                              "};\r",
+                              "\r",
+                              "\r",
+                              "\r",
+                              "pm.sendRequest(postRequest, (err, response) => {\r",
+                              "    if (err) {\r",
+                              "        console.error(err);\r",
+                              "        return;\r",
+                              "    }\r",
+                              "    \r",
+                              "    const createdPlace = response.json();\r",
+                              "    console.log(\"createdPlace\", createdPlace);\r",
+                              "    pm.collectionVariables.set(\"eventId\", event.id);\r",
+                              "    pm.collectionVariables.set(\"placeId\", createdPlace.id);\r",
+                              "    pm.collectionVariables.set(\"userId\", user.id + 100);\r",
+                              "    \r",
+                              "    pm.collectionVariables.set(\"createdPlace\", JSON.stringify(createdPlace));\r",
+                              "    pm.collectionVariables.set(\"createdEvent\", JSON.stringify(event));\r",
+                              "});"
+                            ],
+                            "type": "text/javascript",
+                            "packages": {},
+                            "requests": {}
+                          }
+                        },
+                        {
+                          "listen": "test",
+                          "script": {
+                            "exec": [
+                              "pm.test(\"Ответ должен содержать код статуса 404 и данные в формате json\", function () {\r",
+                              "    pm.response.to.have.status(404);    \r",
+                              "    pm.response.to.be.withBody;\r",
+                              "    pm.response.to.be.json;\r",
+                              "});"
+                            ],
+                            "type": "text/javascript",
+                            "packages": {},
+                            "requests": {}
+                          }
+                        }
+                      ],
+                      "request": {
+                        "method": "PUT",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{{updatedData}}",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/users/:userId/events/:eventId/place/:placeId",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "users",
+                            ":userId",
+                            "events",
+                            ":eventId",
+                            "place",
+                            ":placeId"
+                          ],
+                          "variable": [
+                            {
+                              "key": "userId",
+                              "value": "{{userId}}"
+                            },
+                            {
+                              "key": "eventId",
+                              "value": "{{eventId}}"
+                            },
+                            {
+                              "key": "placeId",
+                              "value": "{{placeId}}"
+                            }
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Привязка места к событию пользователя - несуществующие событие",
+                      "event": [
+                        {
+                          "listen": "prerequest",
+                          "script": {
+                            "exec": [
+                              "const baseUrl = pm.variables.get(\"baseUrl\");\r",
+                              "\r",
+                              "const api = new API(pm);\r",
+                              "const rnd = new RandomUtils();\r",
+                              "\r",
+                              "    let event;\r",
+                              "    let user;\r",
+                              "    try {\r",
+                              "        user = await api.addUser(rnd.getUser());\r",
+                              "        pm.collectionVariables.set(\"uid\", user.id)\r",
+                              "        const category = await api.addCategory(rnd.getCategory());\r",
+                              "                event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
+                              "        \r",
+                              "    } catch(err) {\r",
+                              "        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
+                              "    }\r",
+                              "\r",
+                              "\r",
+                              "const place = {\r",
+                              "    name: `Test_${Date.now()}`,\r",
+                              "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
+                              "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
+                              "};\r",
+                              "\r",
+                              "const postRequest = {\r",
+                              "    url: `${baseUrl}/admin/places`,\r",
+                              "    method: 'POST',\r",
+                              "    header: {\r",
+                              "        'Content-Type': 'application/json'\r",
+                              "    },\r",
+                              "    body: {\r",
+                              "        mode: 'raw',\r",
+                              "        raw: JSON.stringify(place)\r",
+                              "    }\r",
+                              "};\r",
+                              "\r",
+                              "\r",
+                              "\r",
+                              "pm.sendRequest(postRequest, (err, response) => {\r",
+                              "    if (err) {\r",
+                              "        console.error(err);\r",
+                              "        return;\r",
+                              "    }\r",
+                              "    \r",
+                              "    const createdPlace = response.json();\r",
+                              "    console.log(\"createdPlace\", createdPlace);\r",
+                              "    pm.collectionVariables.set(\"eventId\", event.id+ 100);\r",
+                              "    pm.collectionVariables.set(\"placeId\", createdPlace.id);\r",
+                              "    pm.collectionVariables.set(\"userId\", user.id);\r",
+                              "    \r",
+                              "    pm.collectionVariables.set(\"createdPlace\", JSON.stringify(createdPlace));\r",
+                              "    pm.collectionVariables.set(\"createdEvent\", JSON.stringify(event));\r",
+                              "});"
+                            ],
+                            "type": "text/javascript",
+                            "packages": {},
+                            "requests": {}
+                          }
+                        },
+                        {
+                          "listen": "test",
+                          "script": {
+                            "exec": [
+                              "pm.test(\"Ответ должен содержать код статуса 404 и данные в формате json\", function () {\r",
+                              "    pm.response.to.have.status(404);    \r",
+                              "    pm.response.to.be.withBody;\r",
+                              "    pm.response.to.be.json;\r",
+                              "});"
+                            ],
+                            "type": "text/javascript",
+                            "packages": {},
+                            "requests": {}
+                          }
+                        }
+                      ],
+                      "request": {
+                        "method": "PUT",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{{updatedData}}",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/users/:userId/events/:eventId/place/:placeId",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "users",
+                            ":userId",
+                            "events",
+                            ":eventId",
+                            "place",
+                            ":placeId"
+                          ],
+                          "variable": [
+                            {
+                              "key": "userId",
+                              "value": "{{userId}}"
+                            },
+                            {
+                              "key": "eventId",
+                              "value": "{{eventId}}"
+                            },
+                            {
+                              "key": "placeId",
+                              "value": "{{placeId}}"
+                            }
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Привязка места к событию пользователя - несуществующие место",
+                      "event": [
+                        {
+                          "listen": "prerequest",
+                          "script": {
+                            "exec": [
+                              "const baseUrl = pm.variables.get(\"baseUrl\");\r",
+                              "\r",
+                              "const api = new API(pm);\r",
+                              "const rnd = new RandomUtils();\r",
+                              "\r",
+                              "    let event;\r",
+                              "    let user;\r",
+                              "    try {\r",
+                              "        user = await api.addUser(rnd.getUser());\r",
+                              "        pm.collectionVariables.set(\"uid\", user.id)\r",
+                              "        const category = await api.addCategory(rnd.getCategory());\r",
+                              "                event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
+                              "        \r",
+                              "    } catch(err) {\r",
+                              "        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
+                              "    }\r",
+                              "\r",
+                              "\r",
+                              "const place = {\r",
+                              "    name: `Test_${Date.now()}`,\r",
+                              "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
+                              "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
+                              "};\r",
+                              "\r",
+                              "const postRequest = {\r",
+                              "    url: `${baseUrl}/admin/places`,\r",
+                              "    method: 'POST',\r",
+                              "    header: {\r",
+                              "        'Content-Type': 'application/json'\r",
+                              "    },\r",
+                              "    body: {\r",
+                              "        mode: 'raw',\r",
+                              "        raw: JSON.stringify(place)\r",
+                              "    }\r",
+                              "};\r",
+                              "\r",
+                              "\r",
+                              "\r",
+                              "pm.sendRequest(postRequest, (err, response) => {\r",
+                              "    if (err) {\r",
+                              "        console.error(err);\r",
+                              "        return;\r",
+                              "    }\r",
+                              "    \r",
+                              "    const createdPlace = response.json();\r",
+                              "    console.log(\"createdPlace\", createdPlace);\r",
+                              "    pm.collectionVariables.set(\"eventId\", event.id);\r",
+                              "    pm.collectionVariables.set(\"placeId\", createdPlace.id + 100);\r",
+                              "    pm.collectionVariables.set(\"userId\", user.id);\r",
+                              "    \r",
+                              "    pm.collectionVariables.set(\"createdPlace\", JSON.stringify(createdPlace));\r",
+                              "    pm.collectionVariables.set(\"createdEvent\", JSON.stringify(event));\r",
+                              "});"
+                            ],
+                            "type": "text/javascript",
+                            "packages": {},
+                            "requests": {}
+                          }
+                        },
+                        {
+                          "listen": "test",
+                          "script": {
+                            "exec": [
+                              "pm.test(\"Ответ должен содержать код статуса 404 и данные в формате json\", function () {\r",
+                              "    pm.response.to.have.status(404);    \r",
+                              "    pm.response.to.be.withBody;\r",
+                              "    pm.response.to.be.json;\r",
+                              "});"
+                            ],
+                            "type": "text/javascript",
+                            "packages": {},
+                            "requests": {}
+                          }
+                        }
+                      ],
+                      "request": {
+                        "method": "PUT",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{{updatedData}}",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/users/:userId/events/:eventId/place/:placeId",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "users",
+                            ":userId",
+                            "events",
+                            ":eventId",
+                            "place",
+                            ":placeId"
+                          ],
+                          "variable": [
+                            {
+                              "key": "userId",
+                              "value": "{{userId}}"
+                            },
+                            {
+                              "key": "eventId",
+                              "value": "{{eventId}}"
+                            },
+                            {
+                              "key": "placeId",
+                              "value": "{{placeId}}"
+                            }
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Отвязка места от события пользователя - несуществующий пользователь",
+                      "event": [
+                        {
+                          "listen": "prerequest",
+                          "script": {
+                            "exec": [
+                              "const baseUrl = pm.variables.get(\"baseUrl\");\r",
+                              "\r",
+                              "const api = new API(pm);\r",
+                              "const rnd = new RandomUtils();\r",
+                              "\r",
+                              "    let event;\r",
+                              "    let user;\r",
+                              "    try {\r",
+                              "        user = await api.addUser(rnd.getUser());\r",
+                              "        pm.collectionVariables.set(\"uid\", user.id)\r",
+                              "        const category = await api.addCategory(rnd.getCategory());\r",
+                              "                event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
+                              "        \r",
+                              "    } catch(err) {\r",
+                              "        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
+                              "    }\r",
+                              "\r",
+                              "\r",
+                              "const place = {\r",
+                              "    name: `Test_${Date.now()}`,\r",
+                              "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
+                              "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
+                              "};\r",
+                              "\r",
+                              "const postRequest = {\r",
+                              "    url: `${baseUrl}/admin/places`,\r",
+                              "    method: 'POST',\r",
+                              "    header: {\r",
+                              "        'Content-Type': 'application/json'\r",
+                              "    },\r",
+                              "    body: {\r",
+                              "        mode: 'raw',\r",
+                              "        raw: JSON.stringify(place)\r",
+                              "    }\r",
+                              "};\r",
+                              "\r",
+                              "let createdPlace\r",
+                              "pm.sendRequest(postRequest, (err, response) => {\r",
+                              "    if (err) {\r",
+                              "        console.error(err);\r",
+                              "        return;\r",
+                              "    }\r",
+                              "    \r",
+                              "    createdPlace = response.json();\r",
+                              "    pm.collectionVariables.set(\"eventId\", event.id);\r",
+                              "    pm.collectionVariables.set(\"placeId\", createdPlace.id);\r",
+                              "    pm.collectionVariables.set(\"userId\", user.id + 100);\r",
+                              "\r",
+                              "    pm.collectionVariables.set(\"createdPlace\", JSON.stringify(createdPlace));\r",
+                              "    pm.collectionVariables.set(\"createdEvent\", JSON.stringify(event));\r",
+                              "\r",
+                              "    \r",
+                              "const putRequest = {\r",
+                              "    url: `${baseUrl}/users/${user.id}/events/${event.id}/place/${createdPlace.id}`,\r",
+                              "    method: 'PUT'\r",
+                              "};\r",
+                              "\r",
+                              "pm.sendRequest(putRequest, (err, response) => {\r",
+                              "    if (err) {\r",
+                              "        console.error(err);\r",
+                              "        return;\r",
+                              "    }\r",
+                              "});\r",
+                              "\r",
+                              "});\r",
+                              "\r",
+                              ""
+                            ],
+                            "type": "text/javascript",
+                            "packages": {},
+                            "requests": {}
+                          }
+                        },
+                        {
+                          "listen": "test",
+                          "script": {
+                            "exec": [
+                              "pm.test(\"Ответ должен содержать код статуса 404 и данные в формате json\", function () {\r",
+                              "    pm.response.to.have.status(404);    \r",
+                              "    pm.response.to.be.withBody;\r",
+                              "    pm.response.to.be.json;\r",
+                              "});"
+                            ],
+                            "type": "text/javascript",
+                            "packages": {},
+                            "requests": {}
+                          }
+                        }
+                      ],
+                      "request": {
+                        "method": "DELETE",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{{updatedData}}",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/users/:userId/events/:eventId/place",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "users",
+                            ":userId",
+                            "events",
+                            ":eventId",
+                            "place"
+                          ],
+                          "variable": [
+                            {
+                              "key": "userId",
+                              "value": "{{userId}}"
+                            },
+                            {
+                              "key": "eventId",
+                              "value": "{{eventId}}"
+                            }
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Отвязка места от события пользователя - несуществующее событие",
+                      "event": [
+                        {
+                          "listen": "prerequest",
+                          "script": {
+                            "exec": [
+                              "const baseUrl = pm.variables.get(\"baseUrl\");\r",
+                              "\r",
+                              "const api = new API(pm);\r",
+                              "const rnd = new RandomUtils();\r",
+                              "\r",
+                              "    let event;\r",
+                              "    let user;\r",
+                              "    try {\r",
+                              "        user = await api.addUser(rnd.getUser());\r",
+                              "        pm.collectionVariables.set(\"uid\", user.id)\r",
+                              "        const category = await api.addCategory(rnd.getCategory());\r",
+                              "                event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
+                              "        \r",
+                              "    } catch(err) {\r",
+                              "        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
+                              "    }\r",
+                              "\r",
+                              "\r",
+                              "const place = {\r",
+                              "    name: `Test_${Date.now()}`,\r",
+                              "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
+                              "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
+                              "};\r",
+                              "\r",
+                              "const postRequest = {\r",
+                              "    url: `${baseUrl}/admin/places`,\r",
+                              "    method: 'POST',\r",
+                              "    header: {\r",
+                              "        'Content-Type': 'application/json'\r",
+                              "    },\r",
+                              "    body: {\r",
+                              "        mode: 'raw',\r",
+                              "        raw: JSON.stringify(place)\r",
+                              "    }\r",
+                              "};\r",
+                              "\r",
+                              "let createdPlace\r",
+                              "pm.sendRequest(postRequest, (err, response) => {\r",
+                              "    if (err) {\r",
+                              "        console.error(err);\r",
+                              "        return;\r",
+                              "    }\r",
+                              "    \r",
+                              "    createdPlace = response.json();\r",
+                              "    pm.collectionVariables.set(\"eventId\", event.id + 100);\r",
+                              "    pm.collectionVariables.set(\"placeId\", createdPlace.id);\r",
+                              "    pm.collectionVariables.set(\"userId\", user.id);\r",
+                              "\r",
+                              "    pm.collectionVariables.set(\"createdPlace\", JSON.stringify(createdPlace));\r",
+                              "    pm.collectionVariables.set(\"createdEvent\", JSON.stringify(event));\r",
+                              "\r",
+                              "    \r",
+                              "const putRequest = {\r",
+                              "    url: `${baseUrl}/users/${user.id}/events/${event.id}/place/${createdPlace.id}`,\r",
+                              "    method: 'PUT'\r",
+                              "};\r",
+                              "\r",
+                              "pm.sendRequest(putRequest, (err, response) => {\r",
+                              "    if (err) {\r",
+                              "        console.error(err);\r",
+                              "        return;\r",
+                              "    }\r",
+                              "});\r",
+                              "\r",
+                              "});\r",
+                              "\r",
+                              ""
+                            ],
+                            "type": "text/javascript",
+                            "packages": {},
+                            "requests": {}
+                          }
+                        },
+                        {
+                          "listen": "test",
+                          "script": {
+                            "exec": [
+                              "pm.test(\"Ответ должен содержать код статуса 404 и данные в формате json\", function () {\r",
+                              "    pm.response.to.have.status(404);    \r",
+                              "    pm.response.to.be.withBody;\r",
+                              "    pm.response.to.be.json;\r",
+                              "});"
+                            ],
+                            "type": "text/javascript",
+                            "packages": {},
+                            "requests": {}
+                          }
+                        }
+                      ],
+                      "request": {
+                        "method": "DELETE",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{{updatedData}}",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/users/:userId/events/:eventId/place",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "users",
+                            ":userId",
+                            "events",
+                            ":eventId",
+                            "place"
+                          ],
+                          "variable": [
+                            {
+                              "key": "userId",
+                              "value": "{{userId}}"
+                            },
+                            {
+                              "key": "eventId",
+                              "value": "{{eventId}}"
+                            }
+                          ]
+                        }
+                      },
+                      "response": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Привязка места к событию пользователя",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const baseUrl = pm.variables.get(\"baseUrl\");\r",
+                          "\r",
+                          "const api = new API(pm);\r",
+                          "const rnd = new RandomUtils();\r",
+                          "\r",
+                          "    let event;\r",
+                          "    let user;\r",
+                          "    try {\r",
+                          "        user = await api.addUser(rnd.getUser());\r",
+                          "        pm.collectionVariables.set(\"uid\", user.id)\r",
+                          "        const category = await api.addCategory(rnd.getCategory());\r",
+                          "                event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
+                          "        \r",
+                          "    } catch(err) {\r",
+                          "        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
+                          "    }\r",
+                          "\r",
+                          "\r",
+                          "const place = {\r",
+                          "    name: `Test_${Date.now()}`,\r",
+                          "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
+                          "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
+                          "};\r",
+                          "\r",
+                          "const postRequest = {\r",
+                          "    url: `${baseUrl}/admin/places`,\r",
+                          "    method: 'POST',\r",
+                          "    header: {\r",
+                          "        'Content-Type': 'application/json'\r",
+                          "    },\r",
+                          "    body: {\r",
+                          "        mode: 'raw',\r",
+                          "        raw: JSON.stringify(place)\r",
+                          "    }\r",
+                          "};\r",
+                          "\r",
+                          "\r",
+                          "\r",
+                          "pm.sendRequest(postRequest, (err, response) => {\r",
+                          "    if (err) {\r",
+                          "        console.error(err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "    \r",
+                          "    const createdPlace = response.json();\r",
+                          "    console.log(\"createdPlace\", createdPlace);\r",
+                          "    pm.collectionVariables.set(\"eventId\", event.id);\r",
+                          "    pm.collectionVariables.set(\"placeId\", createdPlace.id);\r",
+                          "    pm.collectionVariables.set(\"userId\", user.id);\r",
+                          "    \r",
+                          "    pm.collectionVariables.set(\"createdPlace\", JSON.stringify(createdPlace));\r",
+                          "    pm.collectionVariables.set(\"createdEvent\", JSON.stringify(event));\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {\r",
+                          "    pm.response.to.be.ok;    \r",
+                          "    pm.response.to.be.withBody;\r",
+                          "    pm.response.to.be.json;\r",
+                          "});\r",
+                          "\r",
+                          "const place = JSON.parse(pm.collectionVariables.get('createdPlace'));\r",
+                          "const event = JSON.parse(pm.collectionVariables.get('createdEvent'));\r",
+                          "\r",
+                          "console.log(\"place\", place)\r",
+                          "console.log(\"event\", event)\r",
+                          "\r",
+                          "const updatedEvent = pm.response.json();\r",
+                          "\r",
+                          "pm.test(\"Локация должна содержать id, place\", function () {\r",
+                          "    pm.expect(updatedEvent).to.have.property('id');\r",
+                          "    pm.expect(updatedEvent).to.have.property('place');\r",
+                          "});\r",
+                          "\r",
+                          "pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
+                          "    pm.expect(updatedEvent.id).to.not.be.null;\r",
+                          "    pm.expect(updatedEvent.place.id).equal(place.id, 'Place id must be equal');\r",
+                          "    pm.expect(updatedEvent.place.name).equal(place.name, 'Place name must be equal');\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "PUT",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{{updatedData}}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/users/:userId/events/:eventId/place/:placeId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "users",
+                        ":userId",
+                        "events",
+                        ":eventId",
+                        "place",
+                        ":placeId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "userId",
+                          "value": "{{userId}}"
+                        },
+                        {
+                          "key": "eventId",
+                          "value": "{{eventId}}"
+                        },
+                        {
+                          "key": "placeId",
+                          "value": "{{placeId}}"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Отвязка места от события пользователя",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const baseUrl = pm.variables.get(\"baseUrl\");\r",
+                          "\r",
+                          "const api = new API(pm);\r",
+                          "const rnd = new RandomUtils();\r",
+                          "\r",
+                          "    let event;\r",
+                          "    let user;\r",
+                          "    try {\r",
+                          "        user = await api.addUser(rnd.getUser());\r",
+                          "        pm.collectionVariables.set(\"uid\", user.id)\r",
+                          "        const category = await api.addCategory(rnd.getCategory());\r",
+                          "                event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
+                          "        \r",
+                          "    } catch(err) {\r",
+                          "        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
+                          "    }\r",
+                          "\r",
+                          "\r",
+                          "const place = {\r",
+                          "    name: `Test_${Date.now()}`,\r",
+                          "    lat: (Math.random() * 180 - 90).toFixed(6),     \r",
+                          "    lon: (Math.random() * 360 - 180).toFixed(6),  \r",
+                          "};\r",
+                          "\r",
+                          "const postRequest = {\r",
+                          "    url: `${baseUrl}/admin/places`,\r",
+                          "    method: 'POST',\r",
+                          "    header: {\r",
+                          "        'Content-Type': 'application/json'\r",
+                          "    },\r",
+                          "    body: {\r",
+                          "        mode: 'raw',\r",
+                          "        raw: JSON.stringify(place)\r",
+                          "    }\r",
+                          "};\r",
+                          "\r",
+                          "let createdPlace\r",
+                          "pm.sendRequest(postRequest, (err, response) => {\r",
+                          "    if (err) {\r",
+                          "        console.error(err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "    \r",
+                          "    createdPlace = response.json();\r",
+                          "    pm.collectionVariables.set(\"eventId\", event.id);\r",
+                          "    pm.collectionVariables.set(\"placeId\", createdPlace.id);\r",
+                          "    pm.collectionVariables.set(\"userId\", user.id);\r",
+                          "\r",
+                          "    pm.collectionVariables.set(\"createdPlace\", JSON.stringify(createdPlace));\r",
+                          "    pm.collectionVariables.set(\"createdEvent\", JSON.stringify(event));\r",
+                          "\r",
+                          "    \r",
+                          "const putRequest = {\r",
+                          "    url: `${baseUrl}/users/${user.id}/events/${event.id}/place/${createdPlace.id}`,\r",
+                          "    method: 'PUT'\r",
+                          "};\r",
+                          "\r",
+                          "pm.sendRequest(putRequest, (err, response) => {\r",
+                          "    if (err) {\r",
+                          "        console.error(err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "});\r",
+                          "\r",
+                          "});\r",
+                          "\r",
+                          ""
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "const baseUrl = pm.variables.get(\"baseUrl\");\r",
+                          "\r",
+                          "pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {\r",
+                          "    pm.response.to.have.status(204);    \r",
+                          "    pm.response.to.be.not.withBody;\r",
+                          "});\r",
+                          "\r",
+                          "const place = JSON.parse(pm.collectionVariables.get('createdPlace'));\r",
+                          "const event = JSON.parse(pm.collectionVariables.get('createdEvent'));\r",
+                          "\r",
+                          "console.log(\"place\", place)\r",
+                          "console.log(\"event\", event)\r",
+                          "\r",
+                          "// const updatedEvent = pm.response.json();\r",
+                          "\r",
+                          "pm.sendRequest(`${baseUrl}/events/${event.id}`, (err, event) => {\r",
+                          "    if (err) {\r",
+                          "        console.error(err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "    \r",
+                          "pm.test(\"Локация должна содержать id, и не содержать place\", function () {\r",
+                          "    pm.expect(event).to.have.property('id');\r",
+                          "    pm.expect(event).to.not.have.property('place');\r",
+                          "});\r",
+                          "\r",
+                          "});\r",
+                          ""
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "DELETE",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{{updatedData}}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/users/:userId/events/:eventId/place",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "users",
+                        ":userId",
+                        "events",
+                        ":eventId",
+                        "place"
+                      ],
+                      "variable": [
+                        {
+                          "key": "userId",
+                          "value": "{{userId}}"
+                        },
+                        {
+                          "key": "eventId",
+                          "value": "{{eventId}}"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Event-Search",
+          "item": [
+            {
+              "name": "Validation",
+              "item": [
+                {
+                  "name": "Поиск событий по Id места и радиусу - негативный радиус",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const baseUrl = pm.variables.get(\"baseUrl\");\r",
+                          "\r",
+                          "const api = new API(pm);\r",
+                          "const rnd = new RandomUtils();\r",
+                          "\r",
+                          "    let event;\r",
+                          "    let eventGen;\r",
+                          "\r",
+                          "    try {\r",
+                          "        const user = await api.addUser(rnd.getUser());\r",
+                          "        pm.collectionVariables.set(\"uid\", user.id)\r",
+                          "        const category = await api.addCategory(rnd.getCategory());\r",
+                          "        eventGen = {...rnd.getEvent(category.id), \"location\": {\r",
+                          "        \"lat\": 70,\r",
+                          "        \"lon\": 70\r",
+                          "    }}\r",
+                          "\r",
+                          "        event = await api.addEvent(user.id,eventGen);\r",
+                          "        \r",
+                          "    } catch(err) {\r",
+                          "        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
+                          "    }\r",
+                          "\r",
+                          "\r",
+                          "const place = {\r",
+                          "    name: `Test_${Date.now()}`,\r",
+                          "    lat: 70,     \r",
+                          "    lon: 70,  \r",
+                          "};\r",
+                          "\r",
+                          "const postRequest = {\r",
+                          "    url: `${baseUrl}/admin/places`,\r",
+                          "    method: 'POST',\r",
+                          "    header: {\r",
+                          "        'Content-Type': 'application/json'\r",
+                          "    },\r",
+                          "    body: {\r",
+                          "        mode: 'raw',\r",
+                          "        raw: JSON.stringify(place)\r",
+                          "    }\r",
+                          "};\r",
+                          "\r",
+                          "let createdPlace\r",
+                          "pm.sendRequest(postRequest, (err, response) => {\r",
+                          "    if (err) {\r",
+                          "        console.error(err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "    \r",
+                          "    createdPlace = response.json();\r",
+                          "    pm.collectionVariables.set(\"eventId\", event.id);\r",
+                          "    pm.collectionVariables.set(\"placeId\", createdPlace.id);\r",
+                          "\r",
+                          "    pm.collectionVariables.set(\"createdPlace\", JSON.stringify(createdPlace));\r",
+                          "    pm.collectionVariables.set(\"createdEvent\", JSON.stringify(event));\r",
+                          "\r",
+                          "    \r",
+                          "const putRequest = {\r",
+                          "    url: `${baseUrl}/admin/events/${event.id}/place/${createdPlace.id}`,\r",
+                          "    method: 'PUT'\r",
+                          "};\r",
+                          "\r",
+                          "pm.sendRequest(putRequest, (err) => {\r",
+                          "    if (err) {\r",
+                          "        console.error(err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "});\r",
+                          "\r",
+                          "const patchRequest = {\r",
+                          "    url: `${baseUrl}/admin/events/${event.id}`,\r",
+                          "    method: 'PATCH',\r",
+                          "      header: {\r",
+                          "        'Content-Type': 'application/json'\r",
+                          "    },\r",
+                          "    body: {\r",
+                          "        mode: 'raw',\r",
+                          "        raw: JSON.stringify({...eventGen,stateAction:\"PUBLISH_EVENT\"})\r",
+                          "    }\r",
+                          "};\r",
+                          "\r",
+                          "pm.sendRequest(patchRequest, (err, response) => {\r",
+                          "    if (err) {\r",
+                          "        console.error(err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "});\r",
+                          "\r",
+                          "});\r",
+                          "\r",
+                          ""
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Ответ должен содержать код статуса 400 и данные в формате json\", function () {\r",
+                          "    pm.response.to.have.status(400);    \r",
+                          "    pm.response.to.be.withBody;\r",
+                          "    pm.response.to.be.json;\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{{updatedData}}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/events?placeId={{placeId}}&radius=-100&size=1000000000",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "events"
+                      ],
+                      "query": [
+                        {
+                          "key": "placeId",
+                          "value": "{{placeId}}"
+                        },
+                        {
+                          "key": "radius",
+                          "value": "-100"
+                        },
+                        {
+                          "key": "size",
+                          "value": "1000000000"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Поиск событий по Id места и радиусу - нулевой радиус",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const baseUrl = pm.variables.get(\"baseUrl\");\r",
+                          "\r",
+                          "const api = new API(pm);\r",
+                          "const rnd = new RandomUtils();\r",
+                          "\r",
+                          "    let event;\r",
+                          "    let eventGen;\r",
+                          "\r",
+                          "    try {\r",
+                          "        const user = await api.addUser(rnd.getUser());\r",
+                          "        pm.collectionVariables.set(\"uid\", user.id)\r",
+                          "        const category = await api.addCategory(rnd.getCategory());\r",
+                          "        eventGen = {...rnd.getEvent(category.id), \"location\": {\r",
+                          "        \"lat\": 70,\r",
+                          "        \"lon\": 70\r",
+                          "    }}\r",
+                          "\r",
+                          "        event = await api.addEvent(user.id,eventGen);\r",
+                          "        \r",
+                          "    } catch(err) {\r",
+                          "        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
+                          "    }\r",
+                          "\r",
+                          "\r",
+                          "const place = {\r",
+                          "    name: `Test_${Date.now()}`,\r",
+                          "    lat: 70,     \r",
+                          "    lon: 70,  \r",
+                          "};\r",
+                          "\r",
+                          "const postRequest = {\r",
+                          "    url: `${baseUrl}/admin/places`,\r",
+                          "    method: 'POST',\r",
+                          "    header: {\r",
+                          "        'Content-Type': 'application/json'\r",
+                          "    },\r",
+                          "    body: {\r",
+                          "        mode: 'raw',\r",
+                          "        raw: JSON.stringify(place)\r",
+                          "    }\r",
+                          "};\r",
+                          "\r",
+                          "let createdPlace\r",
+                          "pm.sendRequest(postRequest, (err, response) => {\r",
+                          "    if (err) {\r",
+                          "        console.error(err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "    \r",
+                          "    createdPlace = response.json();\r",
+                          "    pm.collectionVariables.set(\"eventId\", event.id);\r",
+                          "    pm.collectionVariables.set(\"placeId\", createdPlace.id);\r",
+                          "\r",
+                          "    pm.collectionVariables.set(\"createdPlace\", JSON.stringify(createdPlace));\r",
+                          "    pm.collectionVariables.set(\"createdEvent\", JSON.stringify(event));\r",
+                          "\r",
+                          "    \r",
+                          "const putRequest = {\r",
+                          "    url: `${baseUrl}/admin/events/${event.id}/place/${createdPlace.id}`,\r",
+                          "    method: 'PUT'\r",
+                          "};\r",
+                          "\r",
+                          "pm.sendRequest(putRequest, (err) => {\r",
+                          "    if (err) {\r",
+                          "        console.error(err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "});\r",
+                          "\r",
+                          "const patchRequest = {\r",
+                          "    url: `${baseUrl}/admin/events/${event.id}`,\r",
+                          "    method: 'PATCH',\r",
+                          "      header: {\r",
+                          "        'Content-Type': 'application/json'\r",
+                          "    },\r",
+                          "    body: {\r",
+                          "        mode: 'raw',\r",
+                          "        raw: JSON.stringify({...eventGen,stateAction:\"PUBLISH_EVENT\"})\r",
+                          "    }\r",
+                          "};\r",
+                          "\r",
+                          "pm.sendRequest(patchRequest, (err, response) => {\r",
+                          "    if (err) {\r",
+                          "        console.error(err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "});\r",
+                          "\r",
+                          "});\r",
+                          "\r",
+                          ""
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Ответ должен содержать код статуса 400 и данные в формате json\", function () {\r",
+                          "    pm.response.to.have.status(400);    \r",
+                          "    pm.response.to.be.withBody;\r",
+                          "    pm.response.to.be.json;\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{{updatedData}}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/events?placeId={{placeId}}&radius=0&size=1000000000",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "events"
+                      ],
+                      "query": [
+                        {
+                          "key": "placeId",
+                          "value": "{{placeId}}"
+                        },
+                        {
+                          "key": "radius",
+                          "value": "0"
+                        },
+                        {
+                          "key": "size",
+                          "value": "1000000000"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Поиск событий по Id места и радиусу - без места",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const baseUrl = pm.variables.get(\"baseUrl\");\r",
+                          "\r",
+                          "const api = new API(pm);\r",
+                          "const rnd = new RandomUtils();\r",
+                          "\r",
+                          "    let event;\r",
+                          "    let eventGen;\r",
+                          "\r",
+                          "    try {\r",
+                          "        const user = await api.addUser(rnd.getUser());\r",
+                          "        pm.collectionVariables.set(\"uid\", user.id)\r",
+                          "        const category = await api.addCategory(rnd.getCategory());\r",
+                          "        eventGen = {...rnd.getEvent(category.id), \"location\": {\r",
+                          "        \"lat\": 70,\r",
+                          "        \"lon\": 70\r",
+                          "    }}\r",
+                          "\r",
+                          "        event = await api.addEvent(user.id,eventGen);\r",
+                          "        \r",
+                          "    } catch(err) {\r",
+                          "        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
+                          "    }\r",
+                          "\r",
+                          "\r",
+                          "const place = {\r",
+                          "    name: `Test_${Date.now()}`,\r",
+                          "    lat: 70,     \r",
+                          "    lon: 70,  \r",
+                          "};\r",
+                          "\r",
+                          "const postRequest = {\r",
+                          "    url: `${baseUrl}/admin/places`,\r",
+                          "    method: 'POST',\r",
+                          "    header: {\r",
+                          "        'Content-Type': 'application/json'\r",
+                          "    },\r",
+                          "    body: {\r",
+                          "        mode: 'raw',\r",
+                          "        raw: JSON.stringify(place)\r",
+                          "    }\r",
+                          "};\r",
+                          "\r",
+                          "let createdPlace\r",
+                          "pm.sendRequest(postRequest, (err, response) => {\r",
+                          "    if (err) {\r",
+                          "        console.error(err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "    \r",
+                          "    createdPlace = response.json();\r",
+                          "    pm.collectionVariables.set(\"eventId\", event.id);\r",
+                          "    pm.collectionVariables.set(\"placeId\", createdPlace.id);\r",
+                          "\r",
+                          "    pm.collectionVariables.set(\"createdPlace\", JSON.stringify(createdPlace));\r",
+                          "    pm.collectionVariables.set(\"createdEvent\", JSON.stringify(event));\r",
+                          "\r",
+                          "    \r",
+                          "const putRequest = {\r",
+                          "    url: `${baseUrl}/admin/events/${event.id}/place/${createdPlace.id}`,\r",
+                          "    method: 'PUT'\r",
+                          "};\r",
+                          "\r",
+                          "pm.sendRequest(putRequest, (err) => {\r",
+                          "    if (err) {\r",
+                          "        console.error(err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "});\r",
+                          "\r",
+                          "const patchRequest = {\r",
+                          "    url: `${baseUrl}/admin/events/${event.id}`,\r",
+                          "    method: 'PATCH',\r",
+                          "      header: {\r",
+                          "        'Content-Type': 'application/json'\r",
+                          "    },\r",
+                          "    body: {\r",
+                          "        mode: 'raw',\r",
+                          "        raw: JSON.stringify({...eventGen,stateAction:\"PUBLISH_EVENT\"})\r",
+                          "    }\r",
+                          "};\r",
+                          "\r",
+                          "pm.sendRequest(patchRequest, (err, response) => {\r",
+                          "    if (err) {\r",
+                          "        console.error(err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "});\r",
+                          "\r",
+                          "});\r",
+                          "\r",
+                          ""
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Ответ должен содержать код статуса 400 и данные в формате json\", function () {\r",
+                          "    pm.response.to.have.status(400);    \r",
+                          "    pm.response.to.be.withBody;\r",
+                          "    pm.response.to.be.json;\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{{updatedData}}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/events?radius=1&size=1000000000",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "events"
+                      ],
+                      "query": [
+                        {
+                          "key": "radius",
+                          "value": "1"
+                        },
+                        {
+                          "key": "size",
+                          "value": "1000000000"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Поиск событий по Id места и радиусу - не существующущие место",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const baseUrl = pm.variables.get(\"baseUrl\");\r",
+                          "\r",
+                          "const api = new API(pm);\r",
+                          "const rnd = new RandomUtils();\r",
+                          "\r",
+                          "    let event;\r",
+                          "    let eventGen;\r",
+                          "\r",
+                          "    try {\r",
+                          "        const user = await api.addUser(rnd.getUser());\r",
+                          "        pm.collectionVariables.set(\"uid\", user.id)\r",
+                          "        const category = await api.addCategory(rnd.getCategory());\r",
+                          "        eventGen = {...rnd.getEvent(category.id), \"location\": {\r",
+                          "        \"lat\": 70,\r",
+                          "        \"lon\": 70\r",
+                          "    }}\r",
+                          "\r",
+                          "        event = await api.addEvent(user.id,eventGen);\r",
+                          "        \r",
+                          "    } catch(err) {\r",
+                          "        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
+                          "    }\r",
+                          "\r",
+                          "\r",
+                          "const place = {\r",
+                          "    name: `Test_${Date.now()}`,\r",
+                          "    lat: 70,     \r",
+                          "    lon: 70,  \r",
+                          "};\r",
+                          "\r",
+                          "const postRequest = {\r",
+                          "    url: `${baseUrl}/admin/places`,\r",
+                          "    method: 'POST',\r",
+                          "    header: {\r",
+                          "        'Content-Type': 'application/json'\r",
+                          "    },\r",
+                          "    body: {\r",
+                          "        mode: 'raw',\r",
+                          "        raw: JSON.stringify(place)\r",
+                          "    }\r",
+                          "};\r",
+                          "\r",
+                          "let createdPlace\r",
+                          "pm.sendRequest(postRequest, (err, response) => {\r",
+                          "    if (err) {\r",
+                          "        console.error(err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "    \r",
+                          "    createdPlace = response.json();\r",
+                          "    pm.collectionVariables.set(\"eventId\", event.id);\r",
+                          "    pm.collectionVariables.set(\"placeId\", createdPlace.id + 100);\r",
+                          "\r",
+                          "    pm.collectionVariables.set(\"createdPlace\", JSON.stringify(createdPlace));\r",
+                          "    pm.collectionVariables.set(\"createdEvent\", JSON.stringify(event));\r",
+                          "\r",
+                          "    \r",
+                          "const putRequest = {\r",
+                          "    url: `${baseUrl}/admin/events/${event.id}/place/${createdPlace.id}`,\r",
+                          "    method: 'PUT'\r",
+                          "};\r",
+                          "\r",
+                          "pm.sendRequest(putRequest, (err) => {\r",
+                          "    if (err) {\r",
+                          "        console.error(err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "});\r",
+                          "\r",
+                          "const patchRequest = {\r",
+                          "    url: `${baseUrl}/admin/events/${event.id}`,\r",
+                          "    method: 'PATCH',\r",
+                          "      header: {\r",
+                          "        'Content-Type': 'application/json'\r",
+                          "    },\r",
+                          "    body: {\r",
+                          "        mode: 'raw',\r",
+                          "        raw: JSON.stringify({...eventGen,stateAction:\"PUBLISH_EVENT\"})\r",
+                          "    }\r",
+                          "};\r",
+                          "\r",
+                          "pm.sendRequest(patchRequest, (err, response) => {\r",
+                          "    if (err) {\r",
+                          "        console.error(err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "});\r",
+                          "\r",
+                          "});\r",
+                          "\r",
+                          ""
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Ответ должен содержать код статуса 404 и данные в формате json\", function () {\r",
+                          "    pm.response.to.have.status(404);    \r",
+                          "    pm.response.to.be.withBody;\r",
+                          "    pm.response.to.be.json;\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{{updatedData}}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/events?placeId={{placeId}}&radius=1&size=1000000000",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "events"
+                      ],
+                      "query": [
+                        {
+                          "key": "placeId",
+                          "value": "{{placeId}}"
+                        },
+                        {
+                          "key": "radius",
+                          "value": "1"
+                        },
+                        {
+                          "key": "size",
+                          "value": "1000000000"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Поиск событий по Id места  - не существующущие место",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const baseUrl = pm.variables.get(\"baseUrl\");\r",
+                          "\r",
+                          "const api = new API(pm);\r",
+                          "const rnd = new RandomUtils();\r",
+                          "\r",
+                          "    let event;\r",
+                          "    let eventGen;\r",
+                          "\r",
+                          "    try {\r",
+                          "        const user = await api.addUser(rnd.getUser());\r",
+                          "        pm.collectionVariables.set(\"uid\", user.id)\r",
+                          "        const category = await api.addCategory(rnd.getCategory());\r",
+                          "        eventGen = {...rnd.getEvent(category.id), \"location\": {\r",
+                          "        \"lat\": 70,\r",
+                          "        \"lon\": 70\r",
+                          "    }}\r",
+                          "\r",
+                          "        event = await api.addEvent(user.id,eventGen);\r",
+                          "        \r",
+                          "    } catch(err) {\r",
+                          "        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
+                          "    }\r",
+                          "\r",
+                          "\r",
+                          "const place = {\r",
+                          "    name: `Test_${Date.now()}`,\r",
+                          "    lat: 70,     \r",
+                          "    lon: 70,  \r",
+                          "};\r",
+                          "\r",
+                          "const postRequest = {\r",
+                          "    url: `${baseUrl}/admin/places`,\r",
+                          "    method: 'POST',\r",
+                          "    header: {\r",
+                          "        'Content-Type': 'application/json'\r",
+                          "    },\r",
+                          "    body: {\r",
+                          "        mode: 'raw',\r",
+                          "        raw: JSON.stringify(place)\r",
+                          "    }\r",
+                          "};\r",
+                          "\r",
+                          "let createdPlace\r",
+                          "pm.sendRequest(postRequest, (err, response) => {\r",
+                          "    if (err) {\r",
+                          "        console.error(err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "    \r",
+                          "    createdPlace = response.json();\r",
+                          "    pm.collectionVariables.set(\"eventId\", event.id);\r",
+                          "    pm.collectionVariables.set(\"placeId\", createdPlace.id + 100);\r",
+                          "\r",
+                          "    pm.collectionVariables.set(\"createdPlace\", JSON.stringify(createdPlace));\r",
+                          "    pm.collectionVariables.set(\"createdEvent\", JSON.stringify(event));\r",
+                          "\r",
+                          "    \r",
+                          "const putRequest = {\r",
+                          "    url: `${baseUrl}/admin/events/${event.id}/place/${createdPlace.id}`,\r",
+                          "    method: 'PUT'\r",
+                          "};\r",
+                          "\r",
+                          "pm.sendRequest(putRequest, (err) => {\r",
+                          "    if (err) {\r",
+                          "        console.error(err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "});\r",
+                          "\r",
+                          "const patchRequest = {\r",
+                          "    url: `${baseUrl}/admin/events/${event.id}`,\r",
+                          "    method: 'PATCH',\r",
+                          "      header: {\r",
+                          "        'Content-Type': 'application/json'\r",
+                          "    },\r",
+                          "    body: {\r",
+                          "        mode: 'raw',\r",
+                          "        raw: JSON.stringify({...eventGen,stateAction:\"PUBLISH_EVENT\"})\r",
+                          "    }\r",
+                          "};\r",
+                          "\r",
+                          "pm.sendRequest(patchRequest, (err, response) => {\r",
+                          "    if (err) {\r",
+                          "        console.error(err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "});\r",
+                          "\r",
+                          "});\r",
+                          "\r",
+                          ""
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Ответ должен содержать код статуса 404 и данные в формате json\", function () {\r",
+                          "    pm.response.to.have.status(404);    \r",
+                          "    pm.response.to.be.withBody;\r",
+                          "    pm.response.to.be.json;\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{{updatedData}}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/events?placeId={{placeId}}",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "events"
+                      ],
+                      "query": [
+                        {
+                          "key": "placeId",
+                          "value": "{{placeId}}"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Поиск событий по Id места",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "const baseUrl = pm.variables.get(\"baseUrl\");\r",
+                      "\r",
+                      "const api = new API(pm);\r",
+                      "const rnd = new RandomUtils();\r",
+                      "\r",
+                      "    let event;\r",
+                      "    let eventGen;\r",
+                      "\r",
+                      "    try {\r",
+                      "        const user = await api.addUser(rnd.getUser());\r",
+                      "        pm.collectionVariables.set(\"uid\", user.id)\r",
+                      "        const category = await api.addCategory(rnd.getCategory());\r",
+                      "        eventGen = {...rnd.getEvent(category.id), \"location\": {\r",
+                      "        \"lat\": 70,\r",
+                      "        \"lon\": 70\r",
+                      "    }}\r",
+                      "\r",
+                      "        event = await api.addEvent(user.id,eventGen);\r",
+                      "        \r",
+                      "    } catch(err) {\r",
+                      "        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
+                      "    }\r",
+                      "\r",
+                      "\r",
+                      "const place = {\r",
+                      "    name: `Test_${Date.now()}`,\r",
+                      "    lat: 70,     \r",
+                      "    lon: 70,  \r",
+                      "};\r",
+                      "\r",
+                      "const postRequest = {\r",
+                      "    url: `${baseUrl}/admin/places`,\r",
+                      "    method: 'POST',\r",
+                      "    header: {\r",
+                      "        'Content-Type': 'application/json'\r",
+                      "    },\r",
+                      "    body: {\r",
+                      "        mode: 'raw',\r",
+                      "        raw: JSON.stringify(place)\r",
+                      "    }\r",
+                      "};\r",
+                      "\r",
+                      "let createdPlace\r",
+                      "pm.sendRequest(postRequest, (err, response) => {\r",
+                      "    if (err) {\r",
+                      "        console.error(err);\r",
+                      "        return;\r",
+                      "    }\r",
+                      "    \r",
+                      "    createdPlace = response.json();\r",
+                      "    pm.collectionVariables.set(\"eventId\", event.id);\r",
+                      "    pm.collectionVariables.set(\"placeId\", createdPlace.id);\r",
+                      "\r",
+                      "    pm.collectionVariables.set(\"createdPlace\", JSON.stringify(createdPlace));\r",
+                      "    pm.collectionVariables.set(\"createdEvent\", JSON.stringify(event));\r",
+                      "\r",
+                      "    \r",
+                      "const putRequest = {\r",
+                      "    url: `${baseUrl}/admin/events/${event.id}/place/${createdPlace.id}`,\r",
+                      "    method: 'PUT'\r",
+                      "};\r",
+                      "\r",
+                      "pm.sendRequest(putRequest, (err) => {\r",
+                      "    if (err) {\r",
+                      "        console.error(err);\r",
+                      "        return;\r",
+                      "    }\r",
+                      "});\r",
+                      "\r",
+                      "const patchRequest = {\r",
+                      "    url: `${baseUrl}/admin/events/${event.id}`,\r",
+                      "    method: 'PATCH',\r",
+                      "      header: {\r",
+                      "        'Content-Type': 'application/json'\r",
+                      "    },\r",
+                      "    body: {\r",
+                      "        mode: 'raw',\r",
+                      "        raw: JSON.stringify({...eventGen,stateAction:\"PUBLISH_EVENT\"})\r",
+                      "    }\r",
+                      "};\r",
+                      "\r",
+                      "pm.sendRequest(patchRequest, (err, response) => {\r",
+                      "    if (err) {\r",
+                      "        console.error(err);\r",
+                      "        return;\r",
+                      "    }\r",
+                      "});\r",
+                      "\r",
+                      "});\r",
+                      "\r",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const baseUrl = pm.variables.get(\"baseUrl\");\r",
+                      "\r",
+                      "pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {\r",
+                      "    pm.response.to.have.status(200);    \r",
+                      "    pm.response.to.be.withBody;\r",
+                      "});\r",
+                      "\r",
+                      "const place = JSON.parse(pm.collectionVariables.get('createdPlace'));\r",
+                      "const event = JSON.parse(pm.collectionVariables.get('createdEvent'));\r",
+                      "\r",
+                      "const target = pm.response.json();\r",
+                      "\r",
+                      "const found = target.find((element)=>element.id == event.id);\r",
+                      "\r",
+                      "\r",
+                      "pm.test(\"Должен содержать event\", function () {\r",
+                      "    pm.expect(found).to.be.not.undefined;\r",
+                      "});\r",
+                      "\r",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{{updatedData}}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/events?placeId={{placeId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "events"
+                  ],
+                  "query": [
+                    {
+                      "key": "placeId",
+                      "value": "{{placeId}}"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Поиск событий по Id места и радиусу",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "const baseUrl = pm.variables.get(\"baseUrl\");\r",
+                      "\r",
+                      "const api = new API(pm);\r",
+                      "const rnd = new RandomUtils();\r",
+                      "\r",
+                      "    let event;\r",
+                      "    let eventGen;\r",
+                      "\r",
+                      "    try {\r",
+                      "        const user = await api.addUser(rnd.getUser());\r",
+                      "        pm.collectionVariables.set(\"uid\", user.id)\r",
+                      "        const category = await api.addCategory(rnd.getCategory());\r",
+                      "        eventGen = {...rnd.getEvent(category.id), \"location\": {\r",
+                      "        \"lat\": 70,\r",
+                      "        \"lon\": 70\r",
+                      "    }}\r",
+                      "\r",
+                      "        event = await api.addEvent(user.id,eventGen);\r",
+                      "        \r",
+                      "    } catch(err) {\r",
+                      "        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
+                      "    }\r",
+                      "\r",
+                      "\r",
+                      "const place = {\r",
+                      "    name: `Test_${Date.now()}`,\r",
+                      "    lat: 70,     \r",
+                      "    lon: 70,  \r",
+                      "};\r",
+                      "\r",
+                      "const postRequest = {\r",
+                      "    url: `${baseUrl}/admin/places`,\r",
+                      "    method: 'POST',\r",
+                      "    header: {\r",
+                      "        'Content-Type': 'application/json'\r",
+                      "    },\r",
+                      "    body: {\r",
+                      "        mode: 'raw',\r",
+                      "        raw: JSON.stringify(place)\r",
+                      "    }\r",
+                      "};\r",
+                      "\r",
+                      "let createdPlace\r",
+                      "pm.sendRequest(postRequest, (err, response) => {\r",
+                      "    if (err) {\r",
+                      "        console.error(err);\r",
+                      "        return;\r",
+                      "    }\r",
+                      "    \r",
+                      "    createdPlace = response.json();\r",
+                      "    pm.collectionVariables.set(\"eventId\", event.id);\r",
+                      "    pm.collectionVariables.set(\"placeId\", createdPlace.id);\r",
+                      "\r",
+                      "    pm.collectionVariables.set(\"createdPlace\", JSON.stringify(createdPlace));\r",
+                      "    pm.collectionVariables.set(\"createdEvent\", JSON.stringify(event));\r",
+                      "\r",
+                      "    \r",
+                      "const putRequest = {\r",
+                      "    url: `${baseUrl}/admin/events/${event.id}/place/${createdPlace.id}`,\r",
+                      "    method: 'PUT'\r",
+                      "};\r",
+                      "\r",
+                      "pm.sendRequest(putRequest, (err) => {\r",
+                      "    if (err) {\r",
+                      "        console.error(err);\r",
+                      "        return;\r",
+                      "    }\r",
+                      "});\r",
+                      "\r",
+                      "const patchRequest = {\r",
+                      "    url: `${baseUrl}/admin/events/${event.id}`,\r",
+                      "    method: 'PATCH',\r",
+                      "      header: {\r",
+                      "        'Content-Type': 'application/json'\r",
+                      "    },\r",
+                      "    body: {\r",
+                      "        mode: 'raw',\r",
+                      "        raw: JSON.stringify({...eventGen,stateAction:\"PUBLISH_EVENT\"})\r",
+                      "    }\r",
+                      "};\r",
+                      "\r",
+                      "pm.sendRequest(patchRequest, (err, response) => {\r",
+                      "    if (err) {\r",
+                      "        console.error(err);\r",
+                      "        return;\r",
+                      "    }\r",
+                      "});\r",
+                      "\r",
+                      "});\r",
+                      "\r",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const baseUrl = pm.variables.get(\"baseUrl\");\r",
+                      "\r",
+                      "pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {\r",
+                      "    pm.response.to.have.status(200);    \r",
+                      "    pm.response.to.be.withBody;\r",
+                      "});\r",
+                      "\r",
+                      "const place = JSON.parse(pm.collectionVariables.get('createdPlace'));\r",
+                      "const event = JSON.parse(pm.collectionVariables.get('createdEvent'));\r",
+                      "\r",
+                      "const target = pm.response.json();\r",
+                      "\r",
+                      "const found = target.find((element)=>element.id == event.id);\r",
+                      "\r",
+                      "\r",
+                      "pm.test(\"Должен содержать event\", function () {\r",
+                      "    pm.expect(found).to.be.not.undefined;\r",
+                      "});\r",
+                      "\r",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{{updatedData}}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/events?placeId={{placeId}}&radius=1&size=1000000000",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "events"
+                  ],
+                  "query": [
+                    {
+                      "key": "placeId",
+                      "value": "{{placeId}}"
+                    },
+                    {
+                      "key": "radius",
+                      "value": "1"
+                    },
+                    {
+                      "key": "size",
+                      "value": "1000000000",
+                      "type": "text"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
         }
       ]
     }
@@ -3134,6 +5726,22 @@
     },
     {
       "key": "updatedData",
+      "value": ""
+    },
+    {
+      "key": "eventId",
+      "value": ""
+    },
+    {
+      "key": "placeId",
+      "value": ""
+    },
+    {
+      "key": "createdEvent",
+      "value": ""
+    },
+    {
+      "key": "userId",
       "value": ""
     }
   ]
