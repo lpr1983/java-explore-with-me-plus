@@ -1,6 +1,7 @@
 package ewm.main.event.model;
 
 import ewm.main.category.Category;
+import ewm.main.place.Place;
 import ewm.main.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -79,4 +80,8 @@ public class Event {
 
     @Column(name = "created_on", nullable = false)
     private LocalDateTime createdOn;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "place_id")
+    private Place place;
 }

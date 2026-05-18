@@ -25,4 +25,7 @@ public interface PrivateEventService {
 
     EventRequestStatusUpdateResultDto setRequestsStatus(long userId, long eventId, EventRequestStatusUpdateRequestDto dto);
 
+    EventFullDto setPlace(long userId, long eventId, long placeId);
+
+    void removePlace(long userId, long eventId);
 }

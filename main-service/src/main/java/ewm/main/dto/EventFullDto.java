@@ -44,6 +44,8 @@ public class EventFullDto {
     @NotNull
     private LocationDto location;
 
+    private ShortPlaceDto place;
+
     @NotNull
     private Boolean paid;
 
